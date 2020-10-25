@@ -7,7 +7,7 @@ int main() {
     grammar *G = (grammar *)malloc(sizeof(grammar));
     tokenStream *s = (tokenStream*)malloc(sizeof(tokenStream));
     parseTree *t = (parseTree *)malloc(sizeof(parseTree));
-    readGrammar("grammar.txt",G);
+    readGrammar("grammarForCheck.txt",G);
     tokeniseSourcecode("test.txt",s);
     printTokenStream(s);
     createParseTree(t, s, G);

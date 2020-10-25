@@ -33,7 +33,7 @@ void push(stack *st, char *name) {
 void pop(stack *st) {
     if(st->top == NULL) {
         printf("Stack already empty!");
-        // exit(1);
+        exit(1);
     } else {
         // printf("\ndeleting\n");
         stackNode *temp = st->top;
