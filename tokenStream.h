@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h> 
+
+// #ifndef TOKEN_STREAM_H
+// #define TOKEN_STREAM_H
+
 #define MAX_LENGTH 100
 #define RULES_LENGTH 100
 
@@ -25,3 +29,5 @@ bool isArithOperator(char *lexeme);
 bool isLogicalOperator(char *lexeme);
 bool isInteger(char *lexeme);
 bool isIdentifier(char *lexeme);
+
+// #endif

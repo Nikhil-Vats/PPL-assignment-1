@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
+
+#ifndef GRAMMAR_H
+#define GRAMMAR_H
+
 #define MAX_LENGTH 100
 #define RULES_LENGTH 100
 
@@ -30,3 +34,5 @@ void readGrammar(char* filename, grammar *G);
 // int search(struct linkedList* head, int ele);
 
 // void node* delete(struct linkedList* head, int ele);
+
+#endif

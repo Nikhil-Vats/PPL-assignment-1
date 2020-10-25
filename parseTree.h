@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "tokenStream.h"
-#include "grammar.h"
+// #include "grammar.h"
+// #include "tokenStream.h"
+
+// #ifndef PARSE_TREE_H
+// #define PARSE_TREE_H
 typedef struct PTNodeData {
     char *nodeName; // irrespective of terminal or non terminal
     // a union for storing type expression in case of identifiers
@@ -19,13 +22,4 @@ typedef struct parseTree {
     parseTreeNode *root;
 } parseTree;
 
-void printStack(stack *st);
-grammar* findRules(stack *st, grammar *G);
-void createParseTree(parseTree *t, tokenStream *s, grammar *G);
-int insertNodesInStack(stack *st, linkedList *rule, parseTreeNode *parent, bool isChild);
-void removeNodesFromStack(stack *st, int insertCount);
-bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNode *prevNode, grammar *G, bool prevNodeIsTerminal, int flag);
-void printChild(parseTreeNode *root, char *parent);
-void printSibs(parseTreeNode *root, char *origin);
-void printParseTree(parseTreeNode *root);
-stack* copyStack(stack *st);
+// #endif

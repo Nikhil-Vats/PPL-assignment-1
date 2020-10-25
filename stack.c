@@ -22,11 +22,13 @@ void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
     temp->parentNode = parent;
     temp->isChild = isChild;
     temp->next = NULL;
+    temp->prev = NULL;
 
     if(st->top == NULL) {
         st->top = temp;
     } else {
         temp->next = st->top;
+        st->top->prev = temp;
         st->top = temp;
     }
     st->count++;
@@ -36,10 +38,15 @@ void pop(stack *st) {
     if(st->top == NULL) {
         printf("Stack already empty!");
         exit(1);
+    } else if(st->count == 1) {
+        stackNode *temp = st->top;
+        st->top = NULL;
+        free(temp);
     } else {
         // printf("\ndeleting\n");
         stackNode *temp = st->top;
         st->top = st->top->next;
+        st->top->prev = NULL;
         st->count--;
         free(temp);
     }

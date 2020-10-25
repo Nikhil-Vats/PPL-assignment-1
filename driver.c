@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parseTree.h"
+#include "stack.h"
 
 int main() {
     grammar *G = (grammar *)malloc(sizeof(grammar));
