@@ -1,0 +1,5 @@
+program ()
+{
+    declare list of variables a1 a2 : integer ;
+    a1 = a1 + a2 ;
+}

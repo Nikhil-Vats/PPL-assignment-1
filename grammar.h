@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #define MAX_LENGTH 100
 #define RULES_LENGTH 100
 
@@ -14,12 +15,13 @@ typedef struct linkedList {
 } linkedList;
 
 typedef struct grammar {
+    int rulesCount;
     linkedList *arr[RULES_LENGTH];
 } grammar;
 
 void addNode(linkedList *head, char* ele);
 
-void readGrammar(char* filename, grammar G);
+void readGrammar(char* filename, grammar *G);
 
 // struct node *deleteNode(struct linkedList* head);
 

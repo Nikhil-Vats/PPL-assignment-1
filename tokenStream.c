@@ -61,7 +61,7 @@ void printTokenStream(tokenStream *s) {
 char* getTokenName(char* token) {
     char* tokenName = "default";
     if(isKeyword(token))
-    tokenName = "keyword";
+    tokenName = token;
     else if(isArithOperator(token)) {
         if(token[0] == '+')
         tokenName = "plus_op";
@@ -75,29 +75,29 @@ char* getTokenName(char* token) {
         tokenName = "assign_op";
     } else if(isLogicalOperator(token)) {
         if(strcmp(token,"&&&") == 0)
-        tokenName = "logical_and";
+        tokenName = "logic_and";
         else if(strcmp(token,"|||") == 0)
-        tokenName = "logical_op";
+        tokenName = "logic_or";
     } else if(isInteger(token)) {
         tokenName = "static_const";
     } else if(isIdentifier(token)) {
-        tokenName = "identifier";
+        tokenName = "ID";
     } else if(strlen(token) == 1) { // { } [ ] ; :
         if(token[0] == '{')
-        tokenName = "curly_open";
+        tokenName = "CURLYOP";
         else if(token[0] == '}')
-        tokenName = "curly_close";
+        tokenName = "CURLYCL";
         else if(token[0] == '[')
-        tokenName = "square_open";
+        tokenName = "SQUAREOP";
         else if(token[0] == ']')
-        tokenName = "square_close";
+        tokenName = "SQUARECL";
         else if(token[0] == ';')
-        tokenName = "semicolon";
+        tokenName = "semicol";
         else if(token[0] == ':')
         tokenName = "colon";
     } else if(strlen(token) == 2) { // ..  ()
         if(strcmp(token,"()") == 0)
-        tokenName = "parentheses";
+        tokenName = "PARENTHESES";
         else if(strcmp(token,"..") == 0)
         tokenName = "range_dots";
     }
