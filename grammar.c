@@ -54,18 +54,18 @@ void readGrammar(char* filename, grammar *G) {
     }
     G->rulesCount = line_no;
 
-    for(int i = 0; i < line_no; i++) {
-        linkedList *ll = G->arr[i];
-        int nc = 0; 
-        node *temp = ll->first;
-        printf("%s -->  ", temp->name);
-        temp = temp->next;
-        while(temp != NULL) {
-            printf("%s  ", temp->name);
-            temp = temp->next;
-            nc++;
-        }
-        printf("\n");
-    }
+    // for(int i = 0; i < line_no; i++) {
+    //     linkedList *ll = G->arr[i];
+    //     int nc = 0; 
+    //     node *temp = ll->first;
+    //     printf("%s -->  ", temp->name);
+    //     temp = temp->next;
+    //     while(temp != NULL) {
+    //         printf("%s  ", temp->name);
+    //         temp = temp->next;
+    //         nc++;
+    //     }
+    //     printf("\n");
+    // }
     fclose(file);
 }

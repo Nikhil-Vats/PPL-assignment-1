@@ -41,17 +41,17 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
         strcpy(nodeName,st->top->name);
         stackNode *topNode = st->top;
         // printf("%d\n", topNode->isTerminal);
-        if(strcmp(topNode->name,"LOGICALEXPR") == 0) {
-            exit(1);
-        }
+        // if(strcmp(topNode->name,"LOGICALEXPR") == 0) {
+        //     exit(1);
+        // }
         if(strcmp(topNode->name, "epsilon") == 0) {
             pop(st);
         } else if(topNode->isTerminal == true) {
             if(strcasecmp(topNode->name, currToken->token) != 0) {
-                printf("\n%s != %s so we'll go back\n", topNode->name, currToken->token);
+                // printf("\n%s != %s so we'll go backk\n", topNode->name, currToken->lexeme);
                 return false;
             }
-            printf("\n%s == %s so we move on\n", topNode->name, currToken->token);
+            // printf("\n%s == %s so we move on\n", topNode->name, currToken->lexeme);
             PTNodeData *nd = (PTNodeData *)malloc(sizeof(PTNodeData)); 
             nd->nodeName = malloc(strlen(currToken->lexeme)+1);
             strcpy(nd->nodeName, currToken->lexeme);
@@ -60,11 +60,11 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
             ptNode->nodeData = nd;
 
             if(prevNodeIsTerminal == false) {
-                // printf("\n making %s the child of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
+                // printf("\n ********* making %s the child of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
                 prevNode->child = ptNode;
                 ptNode->depth = prevNode->depth + 1;
             } else {
-                // printf("\n making %s the sibling of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
+                // printf("\n  ********* making %s the sibling of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
                 prevNode->next = ptNode;
                 ptNode->depth = prevNode->depth;
             }
@@ -84,11 +84,11 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
             ptNode->nodeData = nd;
 
             if(prevNodeIsTerminal == false) {
-                // printf("\n making %s the child of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
+                // printf("\n ********* making %s the child of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
                 prevNode->child = ptNode;
                 ptNode->depth = prevNode->depth + 1;
             } else {
-                // printf("\n making %s the sibling of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
+                // printf("\n ********* making %s the sibling of %s \n", ptNode->nodeData->nodeName, prevNode->nodeData->nodeName);
                 prevNode->next = ptNode;
                 ptNode->depth = prevNode->depth;
             }
@@ -96,13 +96,13 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
             prevNode = ptNode;
             prevNodeIsTerminal = false;
             grammar *expansionRules = findRules(st, G);
-            printf("\nexpansionRules.rulesCount = %d\n",expansionRules->rulesCount);
+            // printf("\nexpansionRules.rulesCount = %d\n",expansionRules->rulesCount);
             for(int j = 0; j < expansionRules->rulesCount; j++) {
-                printf("\nusing rule %d\n",j);
+                // printf("\nusing rule %d\n",j);
                 stack *newSt = copyStack(st);
                 pop(newSt);
                 int insertCount = insertNodesInStack(newSt, expansionRules->arr[j]);
-                printStack(newSt);
+                // printStack(newSt);
                 bool res = moveForward(expansionRules->arr[j], currToken, newSt, ptNode, G, prevNodeIsTerminal, insertCount);
                 if(res) {
                     return true;
@@ -110,15 +110,15 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
                 if(st->top == NULL) {
                     return false;
                 }
-                printf("\nbacktracking with %s and %s\n", currToken->lexeme, st->top->name);
+                // printf("\nbacktracking with %s and %s\n", currToken->lexeme, st->top->name);
                 
                 // removeNodesFromStack(st, insertCount);
-                printStack(st);
+                // printStack(st);
             }
             push(st, nodeName);
             return false;
         }
-        printStack(st);
+        // printStack(st);
     }
     if(isEmpty(st) && (currToken == NULL)) return true;
     return false;
@@ -144,7 +144,7 @@ stack* copyStack(stack *st) {
         // printf("%s ", temp[--i]);
         push(newOne, temp[--i]);
     }
-    printStack(newOne);
+    // printStack(newOne);
     return newOne;
 }
 

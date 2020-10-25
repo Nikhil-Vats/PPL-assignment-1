@@ -111,7 +111,8 @@ bool isKeyword(char *lexeme) {
        || strcmp(lexeme,"variables") == 0 || strcmp(lexeme,"array") == 0
        || strcmp(lexeme,"size") == 0 || strcmp(lexeme,"values") == 0
        || strcmp(lexeme,"jagged") == 0 || strcmp(lexeme,"integer") == 0
-       || strcmp(lexeme,"real") == 0 || strcmp(lexeme,"boolean") == 0) {
+       || strcmp(lexeme,"real") == 0 || strcmp(lexeme,"boolean") == 0
+       || strcmp(lexeme, "R1") == 0) {
            return true;
        }
 

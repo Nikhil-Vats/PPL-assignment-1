@@ -9,7 +9,7 @@ int main() {
     parseTree *t = (parseTree *)malloc(sizeof(parseTree));
     readGrammar("grammar.txt",G);
     tokeniseSourcecode("test.txt",s);
-    printTokenStream(s);
+    // printTokenStream(s);
     createParseTree(t, s, G);
     // printf("\n%s\n", t->root->child->next->next->next->child->child->child->next->nodeData->nodeName);
     // printParseTree(t->root);
