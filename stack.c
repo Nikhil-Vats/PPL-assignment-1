@@ -4,7 +4,7 @@
 #include "stack.h"
 #include "grammar.c"
 
-void push(stack *st, char *name) {
+void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
     stackNode *temp = (stackNode *)malloc(sizeof(stackNode));
     if (!temp) {  
         printf("\nHeap Overflow");  
@@ -19,6 +19,8 @@ void push(stack *st, char *name) {
     // } else {
     //     printf("%s is a non-terminal", name);
     // }
+    temp->parentNode = parent;
+    temp->isChild = isChild;
     temp->next = NULL;
 
     if(st->top == NULL) {

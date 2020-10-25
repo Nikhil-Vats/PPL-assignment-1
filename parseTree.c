@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parseTree.h"
+#include "stack.h"
 
 parseTreeNode *rootNode;
 void createParseTree(parseTree *t, tokenStream *s, grammar *G) {
@@ -21,7 +21,7 @@ void createParseTree(parseTree *t, tokenStream *s, grammar *G) {
     rootNode = startNode;
     // printf("here");
     stack *st = (stack *)malloc(sizeof(stack));
-    int insertCount = insertNodesInStack(st, G->arr[0]);
+    int insertCount = insertNodesInStack(st, G->arr[0], startNode, true);
     printStack(st);
     tokenNode *currToken = s->first;
     bool prevNodeIsTerminal = false;
@@ -101,8 +101,9 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
                 // printf("\nusing rule %d\n",j);
                 stack *newSt = copyStack(st);
                 pop(newSt);
-                int insertCount = insertNodesInStack(newSt, expansionRules->arr[j]);
+                int insertCount = insertNodesInStack(newSt, expansionRules->arr[j], prevNode, true);
                 // printStack(newSt);
+                // eg - PROGRAM PARENTHESES CURLYOP STATEMENTS CURLYCL
                 bool res = moveForward(expansionRules->arr[j], currToken, newSt, ptNode, G, prevNodeIsTerminal, insertCount);
                 if(res) {
                     return true;
@@ -115,7 +116,7 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
                 // removeNodesFromStack(st, insertCount);
                 // printStack(st);
             }
-            push(st, nodeName);
+            // push(st, nodeName, prevNode,true);
             return false;
         }
         // printStack(st);
@@ -127,7 +128,6 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
 stack* copyStack(stack *st) {
     stack *newOne = (stack *)malloc(sizeof(stack));
     stackNode *tempNode = st->top;
-    // eg - PROGRAM PARENTHESES CURLYOP STATEMENTS CURLYCL
     char* temp[st->count-1];
     int i = 0;
 
@@ -142,22 +142,10 @@ stack* copyStack(stack *st) {
     // push using array in reverse direction (R->L) in stack to maintain leftmost derivation
     while(i > 0) {
         // printf("%s ", temp[--i]);
-        push(newOne, temp[--i]);
+        push(newOne, temp[--i], tempNode->parentNode, tempNode->isChild);
     }
     // printStack(newOne);
     return newOne;
-}
-
-void printStack(stack *st) {
-    // printf("here 2");
-    stackNode *topNode = st->top;
-    printf("\n---> ");
-    // printf("%s ", topNode->name);
-    while(topNode != NULL) {
-        printf("<%s> ", topNode->name);
-        topNode = topNode->next;
-    }
-    printf("\n");
 }
 
 grammar* findRules(stack *st, grammar *G) {
@@ -175,7 +163,7 @@ grammar* findRules(stack *st, grammar *G) {
     return expansionRules;
 }
 
-int insertNodesInStack(stack *st, linkedList *rule) {
+int insertNodesInStack(stack *st, linkedList *rule, parseTreeNode *parent, bool isChild) {
     node *tempNode = rule->first->next;
 
     // eg - PROGRAM PARENTHESES CURLYOP STATEMENTS CURLYCL
@@ -193,10 +181,12 @@ int insertNodesInStack(stack *st, linkedList *rule) {
     // push using array in reverse direction (R->L) in stack to maintain leftmost derivation
     while(i > 0) {
         // printf("%s ", temp[--i]);
-        push(st, temp[--i]);
+        push(st, temp[--i], parent, true);
     }
     return count;
 }
+
+// functions below are just for testing and/or old functions not useful anymore
 
 void removeNodesFromStack(stack *st, int insertCount) {
     // push using array in reverse direction (R->L) in stack to maintain leftmost derivation
@@ -205,6 +195,18 @@ void removeNodesFromStack(stack *st, int insertCount) {
         pop(st);
         insertCount--;
     }
+}
+
+void printStack(stack *st) {
+    // printf("here 2");
+    stackNode *topNode = st->top;
+    printf("\n---> ");
+    // printf("%s ", topNode->name);
+    while(topNode != NULL) {
+        printf("<%s> ", topNode->name);
+        topNode = topNode->next;
+    }
+    printf("\n");
 }
 
 void printParseTree(parseTreeNode *root) {

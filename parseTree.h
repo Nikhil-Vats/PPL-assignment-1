@@ -3,8 +3,6 @@
 
 #include "tokenStream.h"
 #include "grammar.h"
-#include "stack.h"
-
 typedef struct PTNodeData {
     char *nodeName; // irrespective of terminal or non terminal
     // a union for storing type expression in case of identifiers
@@ -24,7 +22,7 @@ typedef struct parseTree {
 void printStack(stack *st);
 grammar* findRules(stack *st, grammar *G);
 void createParseTree(parseTree *t, tokenStream *s, grammar *G);
-int insertNodesInStack(stack *st, linkedList *rule);
+int insertNodesInStack(stack *st, linkedList *rule, parseTreeNode *parent, bool isChild);
 void removeNodesFromStack(stack *st, int insertCount);
 bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNode *prevNode, grammar *G, bool prevNodeIsTerminal, int flag);
 void printChild(parseTreeNode *root, char *parent);
