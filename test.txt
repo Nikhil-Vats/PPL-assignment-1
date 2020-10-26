@@ -1,5 +1,5 @@
 program ()
 {
-    declare list of variables b1 b2 b3 : boolean ;
+    declare list of variables u v : array [ 2 .. 5 ] [ 3 .. 6 ] of integer ;
     a1 = a2 + a3 * a1 ;
 }
