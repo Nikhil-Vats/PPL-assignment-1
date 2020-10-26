@@ -1,5 +1,5 @@
 program ()
 {
     declare list of variables b1 b2 b3 : boolean ;
-    b1 = b2 &&& b3 ||| b1 ;
+    a1 = a2 + a3 * a1 ;
 }

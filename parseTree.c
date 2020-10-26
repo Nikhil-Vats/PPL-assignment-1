@@ -115,7 +115,7 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
                 // emptyStack(newSt);
                 // free(newSt);
                 // printf("\nbacktracking with %s and %s\n", currToken->lexeme, st->top->name);
-                // removeOldNodesFromParseTree(prevNode);
+                removeOldNodesFromParseTree(prevNode);
                 // removeNodesFromStack(st, insertCount);
                 // printStack(st);
             }
@@ -158,6 +158,7 @@ void removeOldNodesFromParseTree(parseTreeNode *ptNode) {
         
         // printf("\n ** ** deletion should be complete now ** ** \n");
     }
+    ptNode->child = NULL;
     return;
 }
 
