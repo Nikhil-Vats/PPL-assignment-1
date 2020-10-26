@@ -29,11 +29,12 @@ grammar* findRules(stack *st, grammar *G);
 void createParseTree(parseTree *t, tokenStream *s, grammar *G);
 int insertNodesInStack(stack *st, linkedList *rule, parseTreeNode *parent, bool isChild);
 void removeNodesFromStack(stack *st, int insertCount);
-bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNode *prevNode, grammar *G, bool prevNodeIsTerminal);
+bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNode *prevNode, grammar *G);
 void printChild(parseTreeNode *root, char *parent);
 void printSibs(parseTreeNode *root, char *origin);
 void printParseTree(parseTreeNode *root);
 stack* copyStack(stack *st);
+void emptyStack(stack *st);
 parseTreeNode* insertNodeInParseTree(stackNode *currSN, tokenNode *currTN, bool isTerminal);
-
+void removeOldNodesFromParseTree(parseTreeNode *ptNode);
 // #endif

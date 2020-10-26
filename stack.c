@@ -34,6 +34,12 @@ void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
     st->count++;
 }
 
+void emptyStack(stack *st) {
+    while(st->top) {
+        pop(st);
+    }
+}
+
 void pop(stack *st) {
     if(st->top == NULL) {
         printf("Stack already empty!");
