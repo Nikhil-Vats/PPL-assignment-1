@@ -36,12 +36,12 @@ void tokeniseSourcecode(char *sourcecode, tokenStream *s) {
     int line_no = 1;
     while (fgets(line, sizeof(line), file)) {
         char *token;
-        token = strtok(line, " \n");
+        token = strtok(line, " \n\t");
         while (token != NULL)
         {   
             char* tokenName = getTokenName(token);
             addToken(s, token, tokenName, line_no);
-            token = strtok(NULL, " \n");
+            token = strtok(NULL, " \n\t");
         }
         line_no++;
     }
@@ -95,10 +95,12 @@ char* getTokenName(char* token) {
         tokenName = "semicol";
         else if(token[0] == ':')
         tokenName = "colon";
+        else if(token[0] == '(')
+        tokenName = "PARENTHESESOP";
+        else if(token[0] == ')')
+        tokenName = "PARENTHESESCL";
     } else if(strlen(token) == 2) { // ..  ()
-        if(strcmp(token,"()") == 0)
-        tokenName = "PARENTHESES";
-        else if(strcmp(token,"..") == 0)
+        if(strcmp(token,"..") == 0)
         tokenName = "range_dots";
     }
     return tokenName;

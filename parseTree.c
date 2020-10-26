@@ -21,7 +21,7 @@ void createParseTree(parseTree *t, tokenStream *s, grammar *G) {
     rootNode = startNode;
     stack *st = (stack *)malloc(sizeof(stack));
     int insertCount = insertNodesInStack(st, G->arr[0], startNode, true);
-    free(firstRule);
+    // free(firstRule);
     // printStack(st);
     tokenNode *currToken = s->first;
     bool res = moveForward(firstRule, currToken, st, startNode, G);
@@ -102,17 +102,14 @@ void removeOldNodesFromParseTree(parseTreeNode *ptNode) {
         PTNodeData *dataToDelete = temp->nodeData;
         printf("\njust going to delete ** %s ** \n", temp->nodeData->nodeName);
         temp->nodeData = NULL;
-        if(dataToDelete != NULL) {
-            // free(dataToDelete);
-        }
-        if(temp != NULL) {
-            // free(temp);
-        }
+        free(dataToDelete);
         temp->next = NULL;
         temp->child = NULL;
-        
+        // temp = NULL;
+        // free(temp);
         // printf("\n ** ** deletion should be complete now ** ** \n");
     }
+    free(ptNode->child);
     ptNode->child = NULL;
     return;
 }

@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "complex": "cpp",
-        "type_traits": "cpp",
-        "cmath": "cpp",
-        "limits": "cpp",
-        "sstream": "cpp"
-    }
-}

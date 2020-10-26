@@ -29,6 +29,22 @@ void addNode(linkedList *l, char* nodeName) {
     return;
 }
 
+void printGrammar(grammar *G) {
+    for(int i = 0; i < G->rulesCount; i++) {
+        linkedList *ll = G->arr[i];
+        int nc = 0; 
+        node *temp = ll->first;
+        printf("%s -->  ", temp->name);
+        temp = temp->next;
+        while(temp != NULL) {
+            printf("%s  ", temp->name);
+            temp = temp->next;
+            nc++;
+        }
+        printf("\n");
+    }
+}
+
 void readGrammar(char* filename, grammar *G) {
     FILE* file = fopen(filename, "r");
     if(file == NULL) {

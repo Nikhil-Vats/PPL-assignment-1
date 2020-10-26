@@ -8,8 +8,9 @@ int main() {
     tokenStream *s = (tokenStream*)malloc(sizeof(tokenStream));
     parseTree *t = (parseTree *)malloc(sizeof(parseTree));
     readGrammar("grammar.txt",G);
-    tokeniseSourcecode("test.txt",s);
+    tokeniseSourcecode("t6.txt",s);
     // printTokenStream(s);
+    // printGrammar(G);
     createParseTree(t, s, G);
     // printf("\n%s\n", t->root->child->next->next->next->child->child->child->next->nodeData->nodeName);
     // printParseTree(t->root);

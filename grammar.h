@@ -27,6 +27,8 @@ void addNode(linkedList *head, char* ele);
 
 void readGrammar(char* filename, grammar *G);
 
+void printGrammar(grammar *G);
+
 // struct node *deleteNode(struct linkedList* head);
 
 // void printList(struct linkedList * head);
