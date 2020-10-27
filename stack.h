@@ -32,9 +32,12 @@ void removeNodesFromStack(stack *st, int insertCount);
 bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNode *prevNode, grammar *G);
 void printChild(parseTreeNode *root, char *parent);
 void printSibs(parseTreeNode *root, char *origin);
-void printParseTree(parseTreeNode *root);
+void printParseTree(parseTree *t);
 stack* copyStack(stack *st);
 void emptyStack(stack *st);
 parseTreeNode* insertNodeInParseTree(stackNode *currSN, tokenNode *currTN, bool isTerminal);
 void removeOldNodesFromParseTree(parseTreeNode *ptNode);
+void traverseParseTree(parseTree *t, int T);
+void printTypeErrors(parseTree *t, int T);
+void printTypeExpressionTable(int T);
 // #endif

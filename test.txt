@@ -1,4 +1,4 @@
-program ()
+program ( )
 {
     declare list of variables u v : array [ 2 .. 5 ] [ 3 .. 6 ] of integer ;
     a1 = a2 + a3 * a1 ;

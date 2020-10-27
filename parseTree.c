@@ -239,18 +239,38 @@ void removeNodesFromStack(stack *st, int insertCount) {
     }
 }
 
-void printParseTree(parseTreeNode *root) {
-    if(root == NULL) {
-        return;
-    }
-    parseTreeNode *tempNode = root;
-    printf("\n\n\n\n\n\n***************");
-    printf("*******%s*******\n",tempNode->nodeData->nodeName);
-    printSibs(tempNode->next, tempNode->nodeData->nodeName);
-    // printChild(tempNode->child, tempNode->nodeData->nodeName);
-    printParseTree(tempNode->child);
-    printParseTree(tempNode->next);
-    printf("***************\n\n\n\n\n\n");
+void printParseTree(parseTree *t) {
+    printf("************************************************************");
+    printf("\n\n\ninput is 3 printParseTree is called\n\n\n");
+    printf("************************************************************");
+    // parseTreeNode *root = t->root;
+    // if(root == NULL) {
+    //     return;
+    // }
+    // parseTreeNode *tempNode = root;
+    // printf("\n\n\n\n\n\n***************");
+    // printf("*******%s*******\n",tempNode->nodeData->nodeName);
+    // printSibs(tempNode->next, tempNode->nodeData->nodeName);
+    // // printChild(tempNode->child, tempNode->nodeData->nodeName);
+    // printParseTree(tempNode->child);
+    // printParseTree(tempNode->next);
+    // printf("***************\n\n\n\n\n\n");
+}
+
+void traverseParseTree(parseTree *t, int T) {
+    printf("************************************************************");
+    printf("\n\n\ninput is %d traverseParseTree is called\n\n\n", T);
+    printf("************************************************************");
+}
+void printTypeErrors(parseTree *t, int T) {
+    printf("************************************************************");
+    printf("\n\n\ninput is %d printTypeErrors is called\n\n\n", T);
+    printf("************************************************************");
+}
+void printTypeExpressionTable(int T) {
+    printf("************************************************************");
+    printf("\n\n\ninput is %d printTypeExpressionTable is called\n\n\n", T);
+    printf("************************************************************");
 }
 
 void printChild(parseTreeNode *root, char *parent) {
