@@ -36,7 +36,7 @@ void removeNodesFromStack(stack *st, int insertCount);
 stack* copyStack(stack *st);
 void emptyStack(stack *st);
 
-extern char* nonTerminals[64];
+extern char* nonTerminals[80];
 extern int nonTerminalCount;
 
 #endif

@@ -6,20 +6,15 @@
 #include "stack.h"
 
 void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
-    stackNode *temp = (stackNode *)malloc(sizeof(stackNode));
+    stackNode *temp = (stackNode *)calloc(1, sizeof(stackNode));
     if (!temp) {  
         printf("\nHeap Overflow");  
         exit(1);  
     }
 
-    temp->name = malloc(strlen(name)+1);
+    temp->name = calloc(1, strlen(name)+1);
     strcpy(temp->name, name);
     temp->isTerminal = isTerminal(name);
-    // if(temp->isTerminal) {
-    //     printf("%s is a terminal", name);
-    // } else {
-    //     printf("%s is a non-terminal", name);
-    // }
     temp->parentNode = parent;
     temp->isChild = isChild;
     temp->next = NULL;
@@ -38,7 +33,6 @@ void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
 void emptyStack(stack *st) {
     while(st->top) {
         pop(st);
-        printf("popping");
     }
 }
 
@@ -53,7 +47,6 @@ void pop(stack *st) {
         free(temp);
         st->count = 0;
     } else {
-        // printf("\ndeleting\n");
         stackNode *temp = st->top;
         st->top->parentNode = NULL;
         st->top = st->top->next;
@@ -69,7 +62,6 @@ bool isEmpty(stack *st) {
 
 bool isTerminal(char* name) {
     for(int i = 0; i < nonTerminalCount; i++) {
-        // printf("\n%s == %s\n",name,nonTerminals[i]);
         if(strcmp(name, nonTerminals[i]) == 0) {
             return false;
         }

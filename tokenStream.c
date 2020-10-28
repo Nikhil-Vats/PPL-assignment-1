@@ -6,10 +6,10 @@
 
 void addToken(tokenStream *s, char* lexemeName, char *tokenName, int line_no) {
     //create a link
-    tokenNode *node = (tokenNode *)malloc(sizeof(tokenNode));
+    tokenNode *node = (tokenNode *)calloc(1, sizeof(tokenNode));
 
-    node->lexeme = malloc(strlen(lexemeName) + 1);
-    node->token = malloc(strlen(tokenName) + 1);
+    node->lexeme = calloc(1, strlen(lexemeName) + 1);
+    node->token = calloc(1, strlen(tokenName) + 1);
 
     strcpy(node->lexeme, lexemeName);
     strcpy(node->token, tokenName);
@@ -82,7 +82,7 @@ char* getTokenName(char* token) {
         tokenName = "static_const";
     } else if(isIdentifier(token)) {
         tokenName = "ID";
-    } else if(strlen(token) == 1) { // { } [ ] ; :
+    } else if(strlen(token) == 1) {
         if(token[0] == '{')
         tokenName = "CURLYOP";
         else if(token[0] == '}')
@@ -99,7 +99,7 @@ char* getTokenName(char* token) {
         tokenName = "PARENTHESESOP";
         else if(token[0] == ')')
         tokenName = "PARENTHESESCL";
-    } else if(strlen(token) == 2) { // ..  ()
+    } else if(strlen(token) == 2) {
         if(strcmp(token,"..") == 0)
         tokenName = "range_dots";
     }

@@ -4,7 +4,7 @@
 #ifndef GRAMMAR_H
 #define GRAMMAR_H
 
-#define RULES_LENGTH 64
+#define RULES_LENGTH 80
 
 typedef struct node {
     char *name;
