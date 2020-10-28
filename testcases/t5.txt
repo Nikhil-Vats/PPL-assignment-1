@@ -10,7 +10,7 @@ program ( )
 	R1 [ 5 ]  : size 2 : values { 22 ; 745 }
 	R1 [ 6 ]  : size 4 : values { 67 ; 91 ; 13 ; 44 }
 	R1 [ 7 ]  : size 1 : values { 17 }
-	R1 [ 8 ]  : size 5 : values { 31 ; 97 ; 10 ; 9 ; 120 }
+	R1 [ 8 ]  : size 5 : values { 31 ;  ; 10 ; 9 ; 120 }
 	declare list of variables b1 b2 b3 : boolean ;
 	declare list of variables u v : array [ 2 .. 5 ] [ 3 .. 6 ] of  integer ;
 	declare list of variables c1 c2 : real ;

@@ -6,6 +6,7 @@
 
 int populateTag(enum dataInfo f2, char *f3)
 {
+    // printf("check f2 = %d and f3 = %s\n",f2,f3);
     if (f2 == primitive)
     {
         return 0;

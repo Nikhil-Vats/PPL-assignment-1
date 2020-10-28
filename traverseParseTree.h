@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// #include "parseTree.h"
-// #include "typeExpressionTable.h"
-
 #define Max_DIMENSION 10
 #define MAX_ENTRIES 20
 #define MAX_ROWS 10

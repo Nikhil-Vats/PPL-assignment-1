@@ -4,34 +4,32 @@
 #define MAX_DIM 10
 #define MAX_VARS 100
 
-/////typeExpr for rectangular
+// typeExpr for rectangular arrays
 typedef struct RECT
 {
-    char *type; //="rectangularArray";
+    char *type; // "rectangularArray";
     int dim;
-    char *R[MAX_DIM][2];    // 1 to dim
-    char *basicElementType; //="integer";
+    char *R[MAX_DIM][2];
+    char *basicElementType; // "integer";
 } RECT;
 
 typedef struct jagged3d
 {
-    int r;       /// dim 2 size
-    int *arr; //dim 3 vals
+    int r;       // dim 2 size
+    int *arr; // dim 3 vals
 } jagged3d;
 
-/////typeExpr for jagged
+// typeExpr for jagged arrays
 typedef struct jaggedDataExp
 {
-    char *type; //="jaggedArray";
-    int dim;
-    char* R1[2];//////1st dimension ranges
-    //dim is the tag here. if dim =2    then use r2
-    //  if dim =3 use jagged3d
+    char *type; // "jaggedArray";
+    int dim; //dim is the tag here
+    char* R1[2]; // 1st dimension ranges
     char *basicElementType; //="integer";
     union
     {
-        int *r2; ///dim 2 vals
-        jagged3d *r2_;
+        int *r2; // if dim = 2, dim 2 vals
+        jagged3d *r2_; // if dim = 3, use jagged3d
     } _2dor3d;
 
 } jaggedDataExp;
@@ -43,25 +41,25 @@ enum dataInfo
     jagged
 };
 
-/////main structure
+// main structure
 typedef struct tableData
 {
-    //char* typeExpression;
-    char *field1;         ///name of var
+    char *field1;         // name of var
     enum dataInfo field2; // datatype
-    char *field3;         //static or dyanamic for rectuangular or non applicable
+    char *field3;         // static or dynamic for rectuangular or non applicable
+    bool isWrong;
     /*
-    field2 = 0 =>primitive  union mein typeprimitive
-    field2 =1 => rectangular  & field3= "static" 
-    field2 =1 => rectangular  & field3= "dyanamic" 
-    field2=2 => jagged 
+    field2 = 0 => primitive
+    field2 = 1 => rectangular & field3= "static" 
+    field2 = 1 => rectangular & field3= "dyanamic" 
+    field2 = 2 => jagged 
     */
-    int tag; // 0 1 2
+    int tag; // calculated based on field 2 and field 3
     union
     {
-        char *typePrimitive;
-        RECT rect;
-        jaggedDataExp jag;
+        char *typePrimitive; // tag = 0
+        RECT rect; // tag = 1 or 2
+        jaggedDataExp jag; // tag = 3
     } field4;
 } tableData;
 
