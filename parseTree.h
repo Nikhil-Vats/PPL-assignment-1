@@ -26,8 +26,8 @@ typedef union typeExpression {
 typedef struct PTNodeData {
     char *nodeName; // irrespective of terminal or non terminal
     int lineNo;
-    // a union for storing type expression in case of identifiers
-    typeExpression *subExpression;
+    int tETag;
+    typeExpression *subExpression; // a union for storing type expression
 } PTNodeData;
 
 typedef struct parseTreeNode {
@@ -46,14 +46,13 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
 parseTreeNode* insertNodeInParseTree(stackNode *currSN, tokenNode *currTN, bool isTerminal);
 void removeOldNodesFromParseTree(parseTreeNode *ptNode);
 
-// void traverseParseTree(parseTree *t, int T);
-void printTypeErrors(parseTree *t, int T);
 void printTypeExpressionTable(int T);
 
 void printParseTree(parseTree *t);
 void printChild(parseTreeNode *root, char *parent);
 void printSibs(parseTreeNode *root, char *origin);
 
+// ****************** TRAVERSAL FUNCTIONS BELOW ************************
 
 void traverseParseTree(parseTree *t, typeExpressionTable *T);
 void inOrder(parseTreeNode *n, typeExpressionTable *T);
@@ -61,7 +60,6 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T);
 void newPush(newStack *s, parseTreeNode *node);
 void newPop(newStack *s);
 bool newIsEmpty(newStack *s);
-//bool isTerminal(char* name);
 void pushID(parseTreeNode *p, newStack *s);
 void findDimensions(parseTreeNode *p);
 void findDimRemaining(parseTreeNode *p);
@@ -70,6 +68,8 @@ void findDimJagged(parseTreeNode *node);
 void findNums(parseTreeNode *node);
 void findListofNumlist(parseTreeNode *node);
 void findNumlist(parseTreeNode *node);
-void makeRows(parseTreeNode *node);
+void findMakeRows(parseTreeNode *node);
+
+void printDecErrors(parseTreeNode *ptNode, char *message);
 
 #endif
