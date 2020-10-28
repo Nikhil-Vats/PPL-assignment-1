@@ -4,8 +4,7 @@
 #ifndef GRAMMAR_H
 #define GRAMMAR_H
 
-#define MAX_LENGTH 100
-#define RULES_LENGTH 100
+#define RULES_LENGTH 64
 
 typedef struct node {
     char *name;
@@ -29,12 +28,7 @@ void readGrammar(char* filename, grammar *G);
 
 void printGrammar(grammar *G);
 
-// struct node *deleteNode(struct linkedList* head);
-
-// void printList(struct linkedList * head);
-
-// int search(struct linkedList* head, int ele);
-
-// void node* delete(struct linkedList* head, int ele);
+extern char* nonTerminals[RULES_LENGTH];
+extern int nonTerminalCount;
 
 #endif

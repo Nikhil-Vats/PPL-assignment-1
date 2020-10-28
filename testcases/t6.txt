@@ -83,6 +83,6 @@ program ( )
 	h1 = h2 + h3 * h1 - h2 * h3 ;   	
 	h1 = h2 + h3 * h1 - h2 * h3 ;   
 	s1 = s2 + s4 * s6 ;    
-	h1 = h2 + h3 * h1 - h2 * h3 ;   	
-	q1 = q2 + q3 ;  	
+	s1 = s2 + s4 * s6 ;    
+	h1 = h2 + h3 * h1 - h2 * h3 ;
 }

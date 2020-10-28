@@ -2,7 +2,7 @@ program ( )
 {
 	declare list of variables new d w e2 : integer ;
 	declare v1 : integer ;
-	declare list of variables abcd ghd2_1 ssd_2_3 : array [ 2 .. 5 ] of integer ;
+	declare list of variables abcd ghd2_1 ssd_2_3 : array [ lo .. 5 ] of integer ;
  	declare list of variables a1 a2 : integer ;
 	declare list of variables b1 b2 b3 : boolean ;
 	declare list of variables u v : array [ 2 .. 5 ] [ 3 .. 6 ] of  integer ;

@@ -1,14 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "stack.h"
+
+// #include "stack.h"
+// #include "grammar.h"
+// #include "tokenStream.h"
+#include "parseTree.h"
 
 int main() {
     grammar *G = (grammar *)malloc(sizeof(grammar));
     tokenStream *s = (tokenStream*)malloc(sizeof(tokenStream));
     parseTree *t = (parseTree *)malloc(sizeof(parseTree));
     readGrammar("grammar.txt",G);
-    tokeniseSourcecode("test.txt",s);
+    tokeniseSourcecode("testcases/t4.txt",s);
+    typeExpressionTable *T=(typeExpressionTable *)malloc(sizeof(typeExpressionTable));
+    T->capacity=10;
+    T->count=0;
+    T->dataTypeExpr=(tableData *)malloc(sizeof(tableData)*10);
+
     int option;
     printf("\nPlease enter a number between 0 and 4 and press ENTER -\n");
     printf("0 -> EXIT\n");
@@ -23,8 +32,8 @@ int main() {
             if(option == 1) {
                 createParseTree(t, s, G);
             } else if(option == 2) {
-                traverseParseTree(t, option);
-                printTypeErrors(t, option);
+                traverseParseTree(t, T);
+                // printTypeErrors(t, option);
             } else if(option == 3) {
                 printParseTree(t);
             } else if(option == 4) {

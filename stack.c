@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "stack.h"
-#include "grammar.c"
 
 void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
     stackNode *temp = (stackNode *)malloc(sizeof(stackNode));
@@ -37,6 +38,7 @@ void push(stack *st, char *name, parseTreeNode* parent, bool isChild) {
 void emptyStack(stack *st) {
     while(st->top) {
         pop(st);
+        printf("popping");
     }
 }
 
@@ -46,11 +48,14 @@ void pop(stack *st) {
         exit(1);
     } else if(st->count == 1) {
         stackNode *temp = st->top;
+        st->top->parentNode = NULL;
         st->top = NULL;
         free(temp);
+        st->count = 0;
     } else {
         // printf("\ndeleting\n");
         stackNode *temp = st->top;
+        st->top->parentNode = NULL;
         st->top = st->top->next;
         st->top->prev = NULL;
         st->count--;

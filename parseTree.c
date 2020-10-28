@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "stack.h"
+
+#include "parseTree.h"
 
 parseTreeNode *rootNode;
 void createParseTree(parseTree *t, tokenStream *s, grammar *G) {
@@ -24,6 +25,7 @@ void createParseTree(parseTree *t, tokenStream *s, grammar *G) {
     // free(firstRule);
     // printStack(st);
     tokenNode *currToken = s->first;
+    // printf("%ld == %ld",sizeof(LISTOFNUMLIST),sizeof(subExpression));
     bool res = moveForward(firstRule, currToken, st, startNode, G);
     if(res) {
         printf("\nsuccess\n");
@@ -53,6 +55,7 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
             prevNode = insertedNode;
             // printStack(st);
             pop(st);
+            // return moveForward(rule, currToken, st, prevNode, G);
         } else {
             parseTreeNode *insertedNode = insertNodeInParseTree(topNode, currToken, false);
             prevNode = insertedNode;
@@ -62,7 +65,7 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
                 pop(newSt);
                 int insertCount = insertNodesInStack(newSt, expansionRules->arr[j], prevNode, true);
                 printStack(newSt);
-
+                // exit(1);
                 bool res = moveForward(expansionRules->arr[j], currToken, newSt, prevNode, G);
                 if(res) {
                     return true;
@@ -70,11 +73,16 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
                 if(st->top == NULL) {
                     return false;
                 }
+                printf("before empty stack\n");
                 // emptyStack(newSt);
                 // free(newSt);
+                printf("remove old nodes\n");
                 removeOldNodesFromParseTree(prevNode);
                 // printStack(st);
             }
+            // for(int k = 0; k < expansionRules->rulesCount; k++) {
+            //     expansionRules->arr[k] = NULL;
+            // }
             // free(expansionRules);
             return false;
         }
@@ -100,9 +108,13 @@ void removeOldNodesFromParseTree(parseTreeNode *ptNode) {
         child = child->next;
 
         PTNodeData *dataToDelete = temp->nodeData;
+        // free(dataToDelete->subExpression.terminal.type);
         printf("\njust going to delete ** %s ** \n", temp->nodeData->nodeName);
-        temp->nodeData = NULL;
+        // free(dataToDelete->subExpression);
+        // free(dataToDelete->nodeName);
         free(dataToDelete);
+        // dataToDelete->nodeName = NULL;
+        temp->nodeData = NULL;
         temp->next = NULL;
         temp->child = NULL;
         // temp = NULL;
@@ -117,22 +129,34 @@ void removeOldNodesFromParseTree(parseTreeNode *ptNode) {
 parseTreeNode* insertNodeInParseTree(stackNode *currSN, tokenNode *currTN, bool isTerminal) {
     parseTreeNode *parentNode = currSN->parentNode;
     
-    PTNodeData *nd = (PTNodeData *)malloc(sizeof(PTNodeData)); 
+    PTNodeData *nd = (PTNodeData *)malloc(sizeof(PTNodeData));
+    // MAKEROWS makeRows = (MAKEROWS)malloc()
+    // nd->subExpression.makerows = makeRows;
+    // nd->subExpression.listofnumlist.count = 0;
+    // nd->subExpression.listofnumlist.count = 0;
+    // nd->subExpression = (typeExpression *)malloc(sizeof(typeExpression));
+    nd->subExpression = NULL;
+    // for(int j = 0; j < 10; j++) {
+    //     nd->subExpression.listofnumlist.listofnums[j].count = 0;
+    //     for(int i = 0; i < 20; i++) {
+    //         nd->subExpression.listofnumlist.listofnums[j].num[i] = 0;
+    //     }
+    // }
     if(isTerminal) {
         nd->nodeName = malloc(strlen(currTN->lexeme)+1);
         nd->lineNo = currTN->lineNo;
         strcpy(nd->nodeName, currTN->lexeme);
-        printf("\ncreated node for %s \n", currTN->lexeme);
+        // printf("\ncreated node for %s \n", nd->nodeName);
     } else {
         nd->lineNo = -1;
-        printf("\ncreated node for %s \n", currSN->name);
         nd->nodeName = malloc(strlen(currSN->name)+1);
         strcpy(nd->nodeName, currSN->name);
+        // printf("\ncreated node for %s \n", currSN->name);
     }
 
     parseTreeNode *nodeToInsert = (parseTreeNode *)malloc(sizeof(parseTreeNode));
     nodeToInsert->nodeData = nd;
-
+    printf("\ncreated node for %s \n", nodeToInsert->nodeData->nodeName);
     // eg - PROGRAM PARENTHESES CURLYOP STATEMENTS CURLYCL
     if(parentNode->child == NULL) {
         parentNode->child = nodeToInsert;
@@ -257,11 +281,11 @@ void printParseTree(parseTree *t) {
     // printf("***************\n\n\n\n\n\n");
 }
 
-void traverseParseTree(parseTree *t, int T) {
-    printf("************************************************************");
-    printf("\n\n\ninput is %d traverseParseTree is called\n\n\n", T);
-    printf("************************************************************");
-}
+// void traverseParseTree(parseTree *t, int T) {
+//     printf("************************************************************");
+//     printf("\n\n\ninput is %d traverseParseTree is called\n\n\n", T);
+//     printf("************************************************************");
+// }
 void printTypeErrors(parseTree *t, int T) {
     printf("************************************************************");
     printf("\n\n\ninput is %d printTypeErrors is called\n\n\n", T);
