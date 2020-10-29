@@ -11,6 +11,8 @@ void traverseParseTree(parseTree *t, typeExpressionTable *T)
     if (t->root != NULL)
     {
         inOrder(t->root->child->next->next->next->next, T);
+        printf("\nMoving on to assignment statements\n");
+        inOrder(t->root->child->next->next->next->next->child->next, T);
     }
 }
 // START program PARENTHESES CURLYOP STATEMENTS CURLYCL
@@ -29,10 +31,15 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
             n = n->child;
         }
         if(strcmp(n->nodeData->nodeName, "MOREDECLARATIONSTATEMENTS") == 0) {
-            printf("\n%s is the name of root \n",n->nodeData->nodeName);
+            // printf("\n%s is the name of root %s \n",n->child->nodeData->nodeName,n->nodeData->nodeName);
+            // if(!n->next) printf("NULL");
+            // else printf("NOT NULL");
+            if(n->child)
             n = n->child;
+            else
+            printf("\n\n*********   DECLARATION STATEMENTS OVER   *********\n\n");
         }
-        if (strcmp(n->nodeData->nodeName, "DECLARATIONSTATEMENT") == 0)
+        if (n && strcmp(n->nodeData->nodeName, "DECLARATIONSTATEMENT") == 0)
         {
             parseTreeNode *children = n->child;
             parseTreeNode *col = NULL;
@@ -134,12 +141,13 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
                 }
                 else if (strcmp(children->nodeData->nodeName, "DIMJAGGED") == 0)
                 {
-                    col = children;
                     data.field2 = jagged;
                     data.field3 = "not_applicable";
                     printf("\n next to a dimJagged node is %s\n", children->next->next->next->next->nodeData->nodeName);
                     findDimJagged(children);
-                    printf("\n findDimJagged done for %s\n", children->nodeData->nodeName);
+                    data.field4.jag.dim = children->nodeData->subExpression->dimJagged.dim;
+                    col = children;
+                    printf("\n findDimJagged done with data.field4.jag.dim = %d\n", children->nodeData->subExpression->dimJagged.dim);
                 }
                 else if (strcmp(children->nodeData->nodeName, "MAKEROWS") == 0)
                 {
@@ -185,7 +193,6 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
             {
                 data.field4.jag.basicElementType = "integer";
                 data.field4.jag.type = "jaggedArray";
-                col = col->next->next; //dimjagged
                 data.field4.jag.dim = col->nodeData->subExpression->dimJagged.dim;
                 data.field4.jag.R1[0] = col->nodeData->subExpression->dimJagged.num1;
                 data.field4.jag.R1[1] = col->nodeData->subExpression->dimJagged.num2;
@@ -193,14 +200,19 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
                 {
                     col = col->next;
                 }
+                // printf("\n%d == %d\n", col->nodeData->subExpression->makerows.is3D, data.field4.jag.dim);
                 if (col->nodeData->subExpression->makerows.is3D == 0 && data.field4.jag.dim == 3 || col->nodeData->subExpression->makerows.is3D == 1 && data.field4.jag.dim == 2)
                 {
-
-                    //////////////////print error for dimension mismatch
+                    if(data.field4.jag.dim == 2) {
+                        printDecErrors(col, "Type definition error for 2D jagged array (WRONG MAKEROWS INIT)", NULL);
+                    } else if(data.field4.jag.dim == 3) {
+                        printDecErrors(col, "Type definition error for 3D jagged array (WRONG MAKEROWS INIT)", NULL);
+                    }
                 }
                 if (col->nodeData->subExpression->makerows.is3D == 0)
                 {
                     int rows = col->nodeData->subExpression->makerows.rows;
+                    printf("\nthis is a 2d arr with rows = %d\n",rows);
                     data.field4.jag._2dor3d.r2 = (int *)calloc(1, sizeof(int) * rows);
                     for (int i = 0; i < rows; i++)
                     {
@@ -209,10 +221,17 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
 
                     ///////////at thids point jagged data structure for d is complete.
                     /////////error checking left
+                    printf("\n");
+                    int optionalVar;
                     for (int i = 0; i < rows; i++)
                     {
+                        printf("%d == %d -->", data.field4.jag._2dor3d.r2[i],col->nodeData->subExpression->makerows.listselect.Numlist[i].count);
                         if (data.field4.jag._2dor3d.r2[i] != col->nodeData->subExpression->makerows.listselect.Numlist[i].count)
                         {
+                            optionalVar = i + 1;
+                            col->nodeData->lineNo += i; 
+                            col->depth += i+7;
+                            printDecErrors(col, "2D JA size mismatch at row ", &optionalVar);
                             ///////////////////////print size mismatch error for 2d
                         }
                     }
@@ -278,7 +297,7 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
         }
 
         else if(strcmp(n->nodeData->nodeName,"ASSIGNMENTSTATEMENT")==0){
-
+            printf("assn");
 
                 // a=a+b
 
@@ -289,6 +308,7 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
         }
         else if (!isTerminal(n->nodeData->nodeName))
         {
+            printf("wtf1");
             inOrder(n->child, T);
             inOrder(n->next, T);
         }
@@ -351,6 +371,7 @@ void findMakeRows(parseTreeNode *node)
             printf("\n inside MR2\n");
             if (!temp->child)
             {
+                printf("\nthis is final??????????\n");
                 node->nodeData->subExpression->makerows.rows = 1;
                 node->nodeData->subExpression->makerows.listofrows = (char **)calloc(1, sizeof(char *));
                 node->nodeData->subExpression->makerows.size = (char **)calloc(1, sizeof(char *));
@@ -443,7 +464,7 @@ void findNumlist(parseTreeNode *node)
                 temp->nodeData->subExpression->terminal.type = temp->nodeData->nodeName;
             }
             else if(strcmp(temp->child->nodeData->nodeName,";") == 0) {
-                printDecErrors(temp, "2D JA size mismatch : Empty number, two `;` shouldn't be consecutively");
+                printDecErrors(temp, "2D JA size mismatch : Empty number, two `;` shouldn't be consecutively", NULL);
             }
             else
             {
@@ -498,7 +519,7 @@ void findListofNumlist(parseTreeNode *node)
                 temp->nodeData->subExpression->terminal.type = temp->nodeData->nodeName;
             }
             else if(strcmp(temp->child->nodeData->nodeName,";") == 0) {
-                printDecErrors(temp, "3D JA size mismatch : Empty list of nums, two `;` shouldn't be consecutively");
+                printDecErrors(temp, "3D JA size mismatch : Empty list of nums, two `;` shouldn't be consecutively", NULL);
             }
             else
             {
@@ -555,8 +576,8 @@ void findDimJagged(parseTreeNode *node)
         // printf("\nat 518 %s\n",temp->nodeData->nodeName);
         if (strcmp(temp->nodeData->nodeName, "[") == 0)
         {
-            // printf("\nat 521\n");
             node->nodeData->subExpression->dimJagged.dim++;
+            // printf("\nat 571 value of dim increased to %d\n", node->nodeData->subExpression->dimJagged.dim);
             temp->nodeData->subExpression->terminal.type = temp->nodeData->nodeName;
         }
         else if (strcmp(getTokenName(temp->nodeData->nodeName), "static_const") == 0)
@@ -732,9 +753,12 @@ bool newIsEmpty(newStack *st)
     return st->top == NULL;
 }
 
-void printDecErrors(parseTreeNode *ptNode, char *message) {
+void printDecErrors(parseTreeNode *ptNode, char *message, int *optionalVar) {
     printf("\n*************************************************************************************\n");
-    printf("%-2d | at depth %-2d | %-20s | %-90s",ptNode->nodeData->lineNo, ptNode->depth, "Declaration", message);
+    if(optionalVar)
+    printf("%-4d | at depth %-2d | %-15s | %s %d",ptNode->nodeData->lineNo, ptNode->depth, "Declaration", message, *optionalVar);
+    else
+    printf("%-4d | at depth %-2d | %-15s | %-90s",ptNode->nodeData->lineNo, ptNode->depth, "Declaration", message);
     printf("\n*************************************************************************************\n");
 }
 

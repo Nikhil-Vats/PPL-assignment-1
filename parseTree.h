@@ -70,6 +70,6 @@ void findListofNumlist(parseTreeNode *node);
 void findNumlist(parseTreeNode *node);
 void findMakeRows(parseTreeNode *node);
 
-void printDecErrors(parseTreeNode *ptNode, char *message);
+void printDecErrors(parseTreeNode *ptNode, char *message, int *optionalVar);
 
 #endif
