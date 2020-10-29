@@ -10,6 +10,12 @@
 #ifndef PARSE_TREE_H
 #define PARSE_TREE_H
 
+
+typedef struct expType{
+    int misMatch;
+    struct tableData table;
+}expType;
+
 typedef union typeExpression {
     struct TERMINAL terminal;
     struct DIMENSION dimension;
@@ -21,6 +27,7 @@ typedef union typeExpression {
     struct NUMS nums;
     struct LISTOFNUMLIST listofnumlist;
     struct MAKEROWS makerows;
+    struct expType data;
 } typeExpression;
 
 typedef struct PTNodeData {
@@ -46,7 +53,7 @@ bool moveForward(linkedList *rule, tokenNode *currToken, stack *st, parseTreeNod
 parseTreeNode* insertNodeInParseTree(stackNode *currSN, tokenNode *currTN, bool isTerminal);
 void removeOldNodesFromParseTree(parseTreeNode *ptNode);
 
-void printTypeExpressionTable(int T);
+// void printTypeExpressionTable(int T);
 
 void printParseTree(parseTree *t);
 void printChild(parseTreeNode *root, char *parent);
@@ -71,5 +78,19 @@ void findNumlist(parseTreeNode *node);
 void findMakeRows(parseTreeNode *node);
 
 void printDecErrors(int lineNo,int depth, char *message, int *optionalVar);
+
+// *****************************  ASSIGNMENT STATEMENTS RECURSION *****************************
+tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T);
+bool compareSubExpr(parseTreeNode* p1, parseTreeNode* p2, typeExpressionTable *T);
+tableData *findvar(parseTreeNode *p, typeExpressionTable *T);
+char *findVarname(parseTreeNode *p);
+bool traverseIndexesRectangular(parseTreeNode *p, tableData d, int dim);
+bool traverseIndexes2djagged(parseTreeNode *p, tableData d, int dim, int dimval, typeExpressionTable *T);
+bool traverseIndexes3djagged(parseTreeNode *p, tableData d, int dim, int dim1val, int dim2val, typeExpressionTable *T);
+tableData* findType(char *var, typeExpressionTable *T);
+parseTreeNode* recurseLogicalExpr(parseTreeNode *logic, typeExpressionTable *T, int *flag);
+parseTreeNode* findNextID(parseTreeNode *node);
+
+void printAssnErrors(parseTreeNode *p1, parseTreeNode *p2, char *op, char *message);
 
 #endif

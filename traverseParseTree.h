@@ -4,7 +4,7 @@
 
 #define Max_DIMENSION 10
 #define MAX_ENTRIES 20
-#define MAX_ROWS 10
+#define MAX_ROWS 20
 
 typedef struct TERMINAL
 {

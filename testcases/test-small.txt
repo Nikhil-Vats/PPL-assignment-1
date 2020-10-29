@@ -3,3 +3,65 @@ program ( )
     declare list of variables u v : array [ 2 .. 5 ] [ 3 .. 6 ] of integer ;
     a1 = a2 + a3 * a1 ;
 }
+
+parseTreeNode *recurseLogicalExpr(parseTreeNode *logic, typeExpressionTable *T, int *flag)
+{
+    printf("within recurseLogical");
+    if (*flag == 1)
+    {
+        return NULL;
+    }
+    if (isTerminal(logic->nodeData->nodeName))
+    {
+        // d = findType(logic->nodeData->nodeName, T);
+        return logic;
+    }
+    //// 1 ||| 2 &&& 3  ||| 4    4->int
+    //// 1 -> logicalexpr2   2 &&& 3  ||| 4  ->logical expr
+    // d->1
+    parseTreeNode *parent = logic;
+    parseTreeNode *p1 = recurseLogicalExpr(logic->child, T, flag);
+    tableData *d = findType(p1->nodeData->nodeName, T);
+    logic->nodeData->subExpression->data.table = *d; /////////if this is the last id
+    if (logic->child->next != NULL)                  ////that is not the lst non terminal of logicalexpr2
+
+    {
+        parseTreeNode *p2 = recurseLogicalExpr(logic->child->next->next, T, flag); //////recursing and finding next logical non terminal
+        tableData *d2 = findType(p2->nodeData->nodeName, T);
+        /////////////to find type mismatch error
+        if ((d->field2 != primitive || strcmp(d->field4.typePrimitive, "boolean") != 0) || (d2->field2 != primitive || strcmp(d2->field4.typePrimitive, "boolean") != 0))
+        {
+            *flag = 1;
+            parseTreeNode *nextId = findNextID(logic->child->next->next);
+
+            printf("\n****error****\n");
+            ///////Print error
+            // if(parent->child->next) {
+                // printAssnErrors(p1, p2, parent->child->next->nodeData->nodeName, "Type error: mismatch between datatypes");
+            // } else {
+                // printf("what?");
+                // printAssnErrors(p1, p2, "nah", "Type error: mismatch between datatypes");
+            // }
+            if (d->field2 != primitive || strcmp(d->field4.typePrimitive, "boolean") != 0) {
+                printf("\n****%s is %s\n",d->field1,d->field4.typePrimitive);
+                // printf("\n****ruined %s of type %s\n",d2->field1,d2->field4.typePrimitive);
+                return p1;
+            }
+            else {
+                printf("\n****%s is %s\n",d2->field1,d2->field4.typePrimitive);
+                printf("\n****ruined %s of type %s\n",d->field1,d->field4.typePrimitive);
+                return p2;
+            }
+            /////////now 'd' contains lexeme 1 and d2 contains lexeme 2.
+        }
+    }
+    // printf("%s ma")
+    return p1;
+}
+
+void printAssnErrors(parseTreeNode *p1, parseTreeNode *p2, char *op, char *message) {
+    printf("\n*************************************************************************************\n");
+    printf("%-4d | at depth %-2d | %-15s | %3s | %3s | %3s | %3s | %3s", p1->nodeData->lineNo, p1->depth, "Assignment", op, p1->nodeData->nodeName, p1->nodeData->subExpression->data.table.field4.typePrimitive, p2->nodeData->nodeName, p2->nodeData->subExpression->data.table.field4.typePrimitive);
+    printf("\n%s", message);
+    printf("\n*************************************************************************************\n");
+}

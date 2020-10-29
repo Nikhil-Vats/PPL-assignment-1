@@ -48,6 +48,7 @@ typedef struct tableData
     enum dataInfo field2; // datatype
     char *field3;         // static or dynamic for rectuangular or non applicable
     bool isWrong;
+    int lineNo;
     /*
     field2 = 0 => primitive
     field2 = 1 => rectangular & field3= "static" 
@@ -72,3 +73,4 @@ typedef struct typeExpressionTable
 
 int populateTag(enum dataInfo f2, char *f3);
 void addType(tableData d,typeExpressionTable *data);
+void printTypeExpressionTable(typeExpressionTable *T);

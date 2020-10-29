@@ -33,7 +33,7 @@ int main() {
             } else if(option == 3) {
                 printParseTree(t);
             } else if(option == 4) {
-                printTypeExpressionTable(option);
+                printTypeExpressionTable(T);
             }
             printf("\nPlease enter a number between 0 and 4 -\n");
             printf("0 -> EXIT\n");

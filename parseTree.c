@@ -229,11 +229,11 @@ void printParseTree(parseTree *t) {
     // printf("***************\n\n\n\n\n\n");
 }
 
-void printTypeExpressionTable(int T) {
-    printf("************************************************************");
-    printf("\n\n\ninput is %d printTypeExpressionTable is called\n\n\n", T);
-    printf("************************************************************");
-}
+// void printTypeExpressionTable(int T) {
+//     printf("************************************************************");
+//     printf("\n\n\ninput is %d printTypeExpressionTable is called\n\n\n", T);
+//     printf("************************************************************");
+// }
 
 void printChild(parseTreeNode *root, char *parent) {
     if(root == NULL) return;
