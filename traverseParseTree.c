@@ -257,27 +257,21 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
                 printf("\nwithin arith ass stmt with first id = %s\n", var);
                 tableData *lhs = findvar(arith, T);
                 if(!lhs) {
-                    printf("\nLHS is wrong\n");
+                    // ERROR ALREADY PRINTED
                 }
-                else {
-                    printf("\nfindvar done with LHS = %s\n", lhs->field1);
-                    if (lhs->field2 == primitive && strcmp(lhs->field4.typePrimitive, "boolean") == 0)
-                    {
-                        // printAssnErrors()
-                    }
-                }
-                // if (isArithOperator(arith))
-                // {
-                //     char *op = getTokenName(arith);
-                // }
                 arith = temp->child->next->next; //In ARITHEXPR2
-                printf("\nnow arith is %s\n", arith->nodeData->nodeName);
 
                 tableData *rhs = recurseArithExp(arith, T);
                 if(!rhs) {
-                    printf("\nnull\n");
-                } else {
-                    printf("success in rhs");
+                    // printf("\nnull\n");
+                } else if(lhs) {
+                    if (lhs->field2 == primitive && strcmp(lhs->field4.typePrimitive, "boolean") == 0)
+                    {
+                        printAssnErrors(temp->child->child, arith, "=", "Type error: variable on LHS is of boolean type");
+                    }
+                    temp->child->child->nodeData->subExpression->data.table = *lhs;
+                    temp->child->next->next->nodeData->subExpression->data.table = *rhs;
+                    bool compare = compareSubExpr(temp->child->child, temp->child->next->next, T, 1);
                 }
                 printf("\n\n******FINALLY RETURNED NO RECURSION NOW*****\n\n");
             }
@@ -318,26 +312,6 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
     }
 }
 
-//ARITHEXPR ARITHEXPR2 plus_op ARITHEXPR
-// ARITHEXPR ARITHEXPR2 minus_op 0ARITHEXPR
-// ARITHEXPR ARITHEXPR2
-// ARITHEXPR2 VARNUM mul_op ARITHEXPR2
-// ARITHEXPR2 VARNUM div_op ARITHEXPR2
-// ARITHEXPR2 VARNUM
-// VAR ID
-// VAR ID SQUAREOP INDEXES SQUARECL
-// VARNUM static_const
-// VARNUM VAR
-/* INDEXES INDEX INDEXES_REM
-INDEXES_REM INDEX INDEXES_REM
-INDEXES_REM epsilon
-INDEX ID
-INDEX static_const
-*/
-
-//typedef enum assignType{mismatch,boolean,integer,real,array};
-
-////start with first Arithexpr2
 tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T)
 {
     if (!p)
@@ -347,14 +321,14 @@ tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T)
     ////if we are at Arithexpr2
     if (strcmp(p->nodeData->nodeName, "ARITHEXPR2") == 0)
     {
-        printf("started with AREXP2\n");
+        // printf("started with AREXP2\n");
         if (strcmp(p->child->nodeData->nodeName, "VARNUM") == 0)
         {
-            printf("now at VARNUM\n");
+            // printf("now at VARNUM\n");
             parseTreeNode *tmp = p->child->child; // tmp = VAR
             if (strcmp(getTokenName(tmp->nodeData->nodeName), "static_const") == 0)
             {
-                printf("found a stat const = %s\n", tmp->nodeData->nodeName);
+                // printf("found a stat const = %s\n", tmp->nodeData->nodeName);
                 p->nodeData->subExpression->data.misMatch = 0;
                 p->nodeData->subExpression->data.table.field1 = tmp->nodeData->nodeName;
                 p->nodeData->subExpression->data.table.field2 = primitive;
@@ -368,13 +342,13 @@ tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T)
                 if(!d) {
                     return NULL;
                 }
-                printf("found var = %s of type %s\n", d->field1, d->field4.typePrimitive);
+                // printf("found var = %s of type %s\n", d->field1, d->field4.typePrimitive);
                 p->nodeData->subExpression->data.misMatch = 0; // u[2 3]
                 p->nodeData->subExpression->data.table = *d;
-                printf("\n%d, %s for %s\n",d->field2,d->field4.typePrimitive,d->field1);
+                // printf("\n%d, %s for %s\n",d->field2,d->field4.typePrimitive,d->field1);
                 if (d->field2 == primitive && strcmp(d->field4.typePrimitive, "boolean") == 0)
                 {
-                    printf("found an error type of %s is boolean\n", d->field1);
+                    // printf("found an error type of %s is boolean\n", d->field1);
                     //////////print type error
                     return NULL;
                 }
@@ -382,16 +356,16 @@ tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T)
             if (p->child->next && p->child->next->next)
 
             { //////////////////recursion done for arithexpr2
-                printf("at arithexpr calling for %s \n",p->child->next->next->nodeData->nodeName);
+                // printf("at arithexpr calling for %s \n",p->child->next->next->nodeData->nodeName);
                 t = recurseArithExp(p->child->next->next, T); // ARITHEXPR2
                 if(t == NULL) {
                     return NULL;
                 }
-                printf("returned");
+                // printf("returned");
                 p->child->next->next->nodeData->subExpression->data.table = *t;
                 p->child->next->next->nodeData->subExpression->data.misMatch = 0;
-                printf("\ncalling compare with %s == %s\n",p->child->next->next->child->child->child->nodeData->nodeName,p->child->child->child->nodeData->nodeName); // tmp = VAR, p = ARITHEXPR2
-                bool compare = compareSubExpr(p->child->next->next->child->child->child, p->child->child->child, T);
+                // printf("\ncalling compare with %s == %s\n",p->child->next->next->child->child->child->nodeData->nodeName,p->child->child->child->nodeData->nodeName); // tmp = VAR, p = ARITHEXPR2
+                bool compare = compareSubExpr(p->child->next->next, p, T, 0);
                 // 	new = d * e2 + w - 76875 + d ;
                 if (compare)
                 {
@@ -399,36 +373,36 @@ tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T)
                     ///no error
                     if(strcmp(p->child->next->nodeData->nodeName,"/") == 0) {
                         if(d->tag == 0) {
-                            d->field4.typePrimitive = "real";
+                            // d->field4.typePrimitive = "real";
                             p->nodeData->subExpression->data.table.field4.typePrimitive = "real";
                         } else if(d->tag == 1 || d->tag == 2) {
-                            d->field4.rect.basicElementType = "real";
+                            // d->field4.rect.basicElementType = "real";
                             p->nodeData->subExpression->data.table.field4.rect.basicElementType = "real";
                         } else if(d->tag == 3) {
-                            d->field4.jag.basicElementType = "real";
+                            // d->field4.jag.basicElementType = "real";
                             p->nodeData->subExpression->data.table.field4.jag.basicElementType = "real";
                         }
-                        printf("tags were %d and %d\n",t->tag,d->tag);
+                        // printf("tags were %d and %d\n",t->tag,d->tag);
                         if(t->tag == 0) {
-                            t->field4.typePrimitive = "real";
+                            // t->field4.typePrimitive = "real";
                             p->child->next->next->nodeData->subExpression->data.table.field4.typePrimitive = "real";
                         } else if(t->tag == 1 || t->tag == 2) {
-                            t->field4.rect.basicElementType = "real";
+                            // t->field4.rect.basicElementType = "real";
                             p->child->next->next->nodeData->subExpression->data.table.field4.rect.basicElementType = "real";
                         } else if(t->tag == 3) {
-                            t->field4.jag.basicElementType = "real";
+                            // t->field4.jag.basicElementType = "real";
                             p->child->next->next->nodeData->subExpression->data.table.field4.jag.basicElementType = "real";
                         }
                         // p->child->next->next->nodeData->subExpression->data.table = *t;
                         // p->child->next->next->nodeData->subExpression->data.table.field4.typePrimitive = "real";
                         // p->nodeData->subExpression->data.table.field4.typePrimitive = "real";
-                        printf("set real for %s and %s\n",d->field1,p->child->next->next->nodeData->subExpression->data.table.field4.typePrimitive);
+                        // printf("set %s for %s and %s for %s\n",p->nodeData->subExpression->data.table.field4.typePrimitive,p->nodeData->nodeName,p->child->next->next->nodeData->nodeName,p->child->next->next->nodeData->subExpression->data.table.field4.typePrimitive);
                     }
-                    printf("compare success\n");
+                    // printf("compare success\n");
                 }
                 else
                 {
-                    printf("compare was false");
+                    // printf("compare was false");
                     p->nodeData->subExpression->data.misMatch = 1;
 
                     ////////////print type mismatch error
@@ -443,96 +417,87 @@ tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T)
                     p->next->next->nodeData->subExpression->data.misMatch = 0;
 
                     if(t) {
-                        bool compare = compareSubExpr(p->next->next, p->child->next->next, T);
+                        bool compare = false;
+                        if(t->field2 == primitive) {
+                            compare = compareSubExpr(p->next->next, p->child->next->next, T, 0);
+                        } else {
+                            compare = compareSubExpr(p->next->next, p, T, 0);
+                        }
                         if(compare) {
-                            printf("\nat 406 compare bw arithExpr2 and arithExpr is true\n");
+                            // printf("\nat 406 compare bw arithExpr2 and arithExpr is true\n");
                             return t1;
                         } else {
-                            printf("\nARITHEXPR2 was not expandable\n");
+                            // printf("\nARITHEXPR2 was not expandable\n");
                             return NULL;
                         }
                     } else {
-                        bool compare = compareSubExpr(p->next->next, p, T);
+                        bool compare = compareSubExpr(p->next->next, p, T, 0);
                         if(compare) {
-                            printf("\nat 415 compare bw arithExpr2 and arithExpr is true\n");
+                            // printf("\nat 415 compare bw arithExpr2 and arithExpr is true\n");
                             return t1;
                         } else {
-                            printf("\nARITHEXPR2 was not expandable\n");
+                            // printf("\nARITHEXPR2 460 was not expandable\n");
                             return NULL;
                         }
                     }
             }
             else {
-                printf("\n\nreturning to prev call ARITHEXPR2 ends here\n\n");
-                return d;
+                // printf("\n\nreturning to prev call ARITHEXPR2 ends here\n\n");
+                return &p->nodeData->subExpression->data.table;
             }
         }
     }
     if (strcmp(p->nodeData->nodeName, "ARITHEXPR") == 0)
     {
-        printf("\ninside arith, expor with child = %s\n",p->child->nodeData->nodeName);
+        // printf("\ninside arith, expor with child = %s\n",p->child->nodeData->nodeName);
         d = recurseArithExp(p->child, T); // for ARITHEXPR2
         if (d == NULL)
             return NULL; //////if we have already found an error
         parseTreeNode *tmp = p->child; // ARITHEXPR2
         tmp->nodeData->subExpression->data.table = *d;
         tmp->nodeData->subExpression->data.misMatch = 0;
-        printf("done with recursion at line 397 %s found\n", d->field1);
+        // printf("done with recursion at line 397 %s found\n", d->field1);
         return d;
-        // 	new = d * e2 + w - 76875 + d ;
-        // if (tmp->next != NULL)
-        // {
-            /////recurse for arithmaticexpr2
-            // tableData *t = recurseArithExp(tmp->next->next, T); // ARITHEXPR
-            // tmp->next->next->nodeData->subExpression->data.table = *t;
-            // tmp->next->next->nodeData->subExpression->data.misMatch = 0;
-            // printf("calling compare with\n");
-            // bool compare = true;
-            // bool compare = compareSubExpr(tmp, tmp->next->next);
-            // if (compare)
-            // {
-                //p->nodeData->subExpression->data.table.field1=findVarname();
-                ///no error
-                // tmp = tmp->next->next;
-                // if(tmp->child->next) {
-                //     printf("compare was true in arexpr, so calling next on %s\n",tmp->child->next->nodeData->nodeName);
-                //     printf("inside tmp child next\n");
-                //     tableData *t1 = recurseArithExp(tmp->child->next->next, T);
-                //     tmp->next->next->next->nodeData->subExpression->data.table = *t1;
-                //     tmp->next->next->next->nodeData->subExpression->data.misMatch = 0;
-                // } else {
-                //     printf("\nNo more recursion this ends here\n");
-                // }
-                // return d;
-            // }
-        //     else
-        //     {
-        //         p->nodeData->subExpression->data.misMatch = 1;
-
-        //         ////////////print type mismatch error
-
-        //         return NULL;
-        //     }
-        // }
-        // else {
-        //     printf("returning to previous call, this has no next\n");
-        //     return d;
-        // }
     }
 }
-bool compareSubExpr(parseTreeNode *p1, parseTreeNode *p2, typeExpressionTable *T)
+bool compareSubExpr(parseTreeNode *p1, parseTreeNode *p2, typeExpressionTable *T, bool compareLHS)
 {
     tableData *t1 = &p1->nodeData->subExpression->data.table;
     tableData *t2 = &p2->nodeData->subExpression->data.table;
-    if (t1->field2 == primitive && t2->field2 != primitive || t1->field2 != primitive && t2->field2 == primitive)
-        return false;
+    // printf("%s is %d [0 for primitive]\n",p1->nodeData->nodeName,t1->field2);
+    // printf("%s is %d [0 for primitive]\n",p2->nodeData->nodeName, t2->field2);
+
+    // if(compareLHS) {
+        if (t1->field2 == primitive && t2->field2 != primitive || t1->field2 != primitive && t2->field2 == primitive) {
+            printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
+            return false;
+        }
+    // }
+    // if (t1->field2 == primitive && t2->field2 != primitive && !compareLHS) {
+    //     if(strcmp(t1->field4.typePrimitive, "integer") == 0) {
+    //         return true;
+    //     } else {
+    //         printf("will return false 1 because type of primitive is %s",t1->field4.typePrimitive);
+    //         printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
+    //         return false;
+    //     }
+    // } else if(t1->field2 != primitive && t2->field2 == primitive && !compareLHS) {
+    //     if(strcmp(t2->field4.typePrimitive, "integer") == 0) {
+    //         return true;
+    //     } else {
+    //         printf("will return false 2 because type of primitive is %s",t2->field4.typePrimitive);
+    //         printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
+    //         return false;
+    //     }
+    // }
     if (t1->field2 == primitive && t2->field2 == primitive)
     {
-        printf("both are primitive, %s is %s and %s is %s\n",t1->field1,t1->field4.typePrimitive,t2->field1,t2->field4.typePrimitive);
+        // printf("both are primitive, %s is %s and %s is %s\n",t1->field1,t1->field4.typePrimitive,t2->field1,t2->field4.typePrimitive);
         if (strcmp(t1->field4.typePrimitive, "integer") && strcmp(t2->field4.typePrimitive, "integer"))
             return true;
         if (strcmp(t1->field4.typePrimitive, "real") && strcmp(t2->field4.typePrimitive, "real"))
             return true;
+        printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
         return false;
     }
     /////////////////////////rectangular and jagged comparision left
@@ -544,13 +509,17 @@ bool compareSubExpr(parseTreeNode *p1, parseTreeNode *p2, typeExpressionTable *T
             {
                 for (int i = 0; i < t1->field4.rect.dim; i++)
                 {
-                    if (strcmp(t1->field4.rect.R[i][0], t2->field4.rect.R[i][0]) != 0 || strcmp(t1->field4.rect.R[i][1], t2->field4.rect.R[i][1]) != 0)
+                    if (strcmp(t1->field4.rect.R[i][0], t2->field4.rect.R[i][0]) != 0 || strcmp(t1->field4.rect.R[i][1], t2->field4.rect.R[i][1]) != 0) {
+                        printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
                         return false;
+                    }
                 }
                 return true;
             }
-            else
-                return false;
+            else {
+               printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
+               return false; 
+            }
         }
         else if (strcmp(t1->field3, "dynamic") && strcmp(t2->field3, "dynamic"))
         {
@@ -558,21 +527,31 @@ bool compareSubExpr(parseTreeNode *p1, parseTreeNode *p2, typeExpressionTable *T
             {
                 for (int i = 0; i < t1->field4.rect.dim; i++)
                 {
-                    if (strcmp(t1->field4.rect.R[i][0], t2->field4.rect.R[i][0]) != 0 || strcmp(t1->field4.rect.R[i][1], t2->field4.rect.R[i][1]) != 0)
+                    if (strcmp(t1->field4.rect.R[i][0], t2->field4.rect.R[i][0]) != 0 || strcmp(t1->field4.rect.R[i][1], t2->field4.rect.R[i][1]) != 0) {
+                        printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
                         return false;
+                    }
                 }
                 return true;
             }
-            else
+            else {
+                printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
                 return false;
+            }
         }
-        else
+        else {
+            printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
             return false;
+        }
     }
-    if (t1->field2 == rectangular && t2->field2 != rectangular || t1->field2 != rectangular && t2->field2 == rectangular)
+    if (t1->field2 == rectangular && t2->field2 != rectangular || t1->field2 != rectangular && t2->field2 == rectangular) {
+        printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
         return false;
-    if (p1->nodeData->subExpression->data.table.lineNo != p2->nodeData->subExpression->data.table.lineNo)
+    }
+    if (p1->nodeData->subExpression->data.table.lineNo != p2->nodeData->subExpression->data.table.lineNo) {
+        printAssnErrors(p1, p2, "", "Type mismatch between subexpressions.");
         return false;
+    }
     return true;
 }
 
@@ -583,24 +562,24 @@ tableData *findvar(parseTreeNode *p, typeExpressionTable *T)
     if (d->isWrong)
     {
         //printf() error
-        printf("printf iswrong");
+        printAssnErrors(p, NULL, "=", "Error in the declaration of this variable");
         return NULL;
     }
     if (!p->next)
     {
-        printf("\nthis was just an ID so no next\n");
+        // printf("\nthis was just an ID so no next\n");
         return d;
     }
     else
     {
-        printf("\n%s is not primitive\n", p->nodeData->nodeName);
+        printf("\n%s is not primitive, %d\n", p->nodeData->nodeName, d->field2);
         bool r;
         ////we are sending child of indexes thst is we are at index
         if (d->field2 == rectangular)
             r = traverseIndexesRectangular(p->next->next->child, *d, 0);
         else if (d->field2 == jagged)
         {
-            printf("%d are the dim of this jag",d->field4.jag.dim);
+            // printf("%d are the dim of this jag",d->field4.jag.dim);
             if (d->field4.jag.dim == 2)
                 r = traverseIndexes2djagged(p->next->next->child, *d, 0, 0, T);
             else
@@ -608,64 +587,59 @@ tableData *findvar(parseTreeNode *p, typeExpressionTable *T)
         }
         if (r == false)
         {
-            printf("\nreturning false\n");
-            printf("\nreturning false\n");
-            printf("\nreturning false\n");
+            printAssnErrors(p, NULL, "N/A","Array index out of bounds");
+            //  error will be already printed
             return NULL;
         }
     }
-    printf("\noutside of else at 481\n");
-    d->field2 = primitive;
-    d->field3 = "not_applicable";
-    d->tag = 0;
-    d->field4.typePrimitive = "integer";
-    return d;
+    // printf("\noutside of else at 481\n");
+    p->nodeData->subExpression->data.table.field2 = primitive;
+    p->nodeData->subExpression->data.table.field3 = "not_applicable";
+    p->nodeData->subExpression->data.table.tag = 0;
+    p->nodeData->subExpression->data.table.field4.typePrimitive = "integer";
+    return &p->nodeData->subExpression->data.table;
 }
 //////starting at id of var id squareop indexes squarecl
-char *findVarname(parseTreeNode *p)
-{
-    if (!p)
-        return NULL;
-    char *name;
-    if (isTerminal(p->nodeData->nodeName))
-    {
-        name = p->nodeData->nodeName;
-        if (p->next != NULL)
-            strcat(name, findVarname(p->next)); ///
-    }
-    else
-    {
-        name = findVarname(p->child);
-        if (p->next != NULL)
-            strcat(name, findVarname(p->next));
-    }
-    return name;
-}
-/*  INDEXES INDEX INDEXES_REM
-    INDEXES_REM INDEX INDEXES_REM
-        INDEXES_REM epsilon
-        INDEX ID
-        INDEX static_const
-        */
+// char *findVarname(parseTreeNode *p)
+// {
+//     if (!p)
+//         return NULL;
+//     char *name;
+//     if (isTerminal(p->nodeData->nodeName))
+//     {
+//         name = p->nodeData->nodeName;
+//         if (p->next != NULL)
+//             strcat(name, findVarname(p->next)); ///
+//     }
+//     else
+//     {
+//         name = findVarname(p->child);
+//         if (p->next != NULL)
+//             strcat(name, findVarname(p->next));
+//     }
+//     return name;
+// }
+
 bool traverseIndexesRectangular(parseTreeNode *p, tableData d, int dim)
 {
+    // printf("inside TIR\n");
     if (!p)
     {
         return true;
     }
     if (isIdentifier(p->child->nodeData->nodeName))
     {
-        printf("it is identifier = %s\n",p->child->nodeData->nodeName);
+        // printf("it is identifier = %s\n",p->child->nodeData->nodeName);
         return true;
     }
 
     if (strcmp(getTokenName(p->child->nodeData->nodeName), "static_const") == 0)
     {
 
-        printf("it is stat _ const = %s\n",p->child->nodeData->nodeName);
+        // printf("it is stat _ const = %s\n",p->child->nodeData->nodeName);
         if (strcmp(d.field3, "static") == 0)
         {
-            printf("inside static block\n");
+            // printf("inside static block\n");
             int r1 = atoi(d.field4.rect.R[dim][0]);
             int r2 = atoi(d.field4.rect.R[dim][1]);
             if (!(atoi(p->child->nodeData->nodeName) >= r1 && atoi(p->child->nodeData->nodeName) <= r2))
@@ -674,8 +648,10 @@ bool traverseIndexesRectangular(parseTreeNode *p, tableData d, int dim)
                 //error array outof bounds
                 return false;
             }
-            else
+            else {
+                printf("No error here\n");
                 return traverseIndexesRectangular(p->next->child, d, dim + 1);
+            }
         }
         else
         {
@@ -689,7 +665,8 @@ bool traverseIndexesRectangular(parseTreeNode *p, tableData d, int dim)
                 if (atoi(p->child->nodeData->nodeName) > atoi(d.field4.rect.R[dim][1]))
                 {
                     printf("2d dim out of bound\n");
-                    //error array outof bounds
+                    // error array outof bounds
+                    // printAssnErrors(p->child, NULL, "N/A","Array index out of bounds");
                     return false;
                 }
                 else
@@ -700,7 +677,8 @@ bool traverseIndexesRectangular(parseTreeNode *p, tableData d, int dim)
                 if (atoi(p->child->nodeData->nodeName) < atoi(d.field4.rect.R[dim][0]))
                 {
                     printf("2d dim out of bound\n");
-                    //error array outof bounds
+                    // error array outof bounds
+                    // printAssnErrors(p->child, NULL, "N/A","Array index out of bounds");
                     return false;
                 }
                 else
@@ -733,7 +711,7 @@ bool traverseIndexes2djagged(parseTreeNode *p, tableData d, int dim, int dimval,
             if (!(atoi(p->child->nodeData->nodeName) >= r1 && atoi(p->child->nodeData->nodeName) <= r2))
             {
                 /////////print 1st dimension error
-                printf("\nARRAY OUT OF BOUNDS\n");
+                // printf("\nARRAY OUT OF BOUNDS\n");
                 return false;
             }
             else
@@ -741,14 +719,14 @@ bool traverseIndexes2djagged(parseTreeNode *p, tableData d, int dim, int dimval,
         }
         if (dim == 1)
         {
-            printf("dimval is %d\n",dimval);
+            // printf("dimval is %d\n",dimval);
             int size = d.field4.jag._2dor3d.r2[dimval];
             if (atoi(p->child->nodeData->nodeName) < size)
                 return true;
             else
             {   
-                printf("%d == %d",atoi(p->child->nodeData->nodeName),size);
-                printf("\nARRAY OUT OF BOUNDS 2\n");
+                // printf("%d == %d",atoi(p->child->nodeData->nodeName),size);
+                // printf("\nARRAY OUT OF BOUNDS 2\n");
                 ////////////////print error for array size mismatch
                 return false;
             }
@@ -778,7 +756,7 @@ bool traverseIndexes3djagged(parseTreeNode *p, tableData d, int dim, int dim1val
             if (!(atoi(p->child->nodeData->nodeName) >= r1 && atoi(p->child->nodeData->nodeName) <= r2))
             {
                 /////////print 1st dimension error
-                printf("\n3d 1d wrong\n");
+                // printf("\n3d 1d wrong\n");
                 return false;
             }
             else
@@ -788,13 +766,13 @@ bool traverseIndexes3djagged(parseTreeNode *p, tableData d, int dim, int dim1val
         {
             int size = d.field4.jag._2dor3d.r2_[dim1val].r;
             if (atoi(p->child->nodeData->nodeName) < size) {
-                printf("%s----\n",p->child->nodeData->nodeName);
+                // printf("%s----\n",p->child->nodeData->nodeName);
                 return traverseIndexes3djagged(p->next->child, d, 2, dim1val, atoi(p->child->nodeData->nodeName), T);
             }
             else
             {
                 // printf("%d == %d\n",atoi(p->child->nodeData->nodeName), size);
-                printf("\n3d 2d wrong\n");
+                // printf("\n3d 2d wrong\n");
                 // print error for array size mismatch
                 return false;
             }
@@ -803,12 +781,12 @@ bool traverseIndexes3djagged(parseTreeNode *p, tableData d, int dim, int dim1val
         {
             int dim3val = d.field4.jag._2dor3d.r2_[dim1val].arr[dim2val];
             if (atoi(p->child->nodeData->nodeName) < dim3val) {
-                printf("%d+++++%d",(int)atoi(p->child->nodeData->nodeName),dim3val);
+                // printf("%d+++++%d",(int)atoi(p->child->nodeData->nodeName),dim3val);
                 return true;
             }
             else
             {
-                printf("\n3d 3d wrong %s == %d\n", p->child->nodeData->nodeName, dim3val);
+                // printf("\n3d 3d wrong %s == %d\n", p->child->nodeData->nodeName, dim3val);
                 ////////////////print error for array size mismatch
                 return false;
             }
@@ -884,18 +862,18 @@ parseTreeNode *recurseLogicalExpr(parseTreeNode *logic, typeExpressionTable *T, 
     return p1;
 }
 
-parseTreeNode *findNextID(parseTreeNode *node)
-{
-    if (isIdentifier(node->nodeData->nodeName))
-    {
-        return node;
-    }
-    if (isTerminal(node->nodeData->nodeName))
-    {
-        return findNextID(node->next);
-    }
-    return findNextID(node->child);
-}
+// parseTreeNode *findNextID(parseTreeNode *node)
+// {
+//     if (isIdentifier(node->nodeData->nodeName))
+//     {
+//         return node;
+//     }
+//     if (isTerminal(node->nodeData->nodeName))
+//     {
+//         return findNextID(node->next);
+//     }
+//     return findNextID(node->child);
+// }
 
 // R1 [ 4 ] : size 3 : values { 21 641 23 36 125 ; 54 221 43 ; 287 501 453 334 23 }
 /* MAKEROWS R1 SQUAREOP static_const SQUARECL COLON size static_const COLON values CURLYOP NUMLIST CURLYCL MAKEROWS2
@@ -1289,7 +1267,52 @@ void printDecErrors(int lineNo, int depth, char *message, int *optionalVar)
 
 void printAssnErrors(parseTreeNode *p1, parseTreeNode *p2, char *op, char *message)
 {
-    printf("\n*************************************************************************************\n");
-    printf("%-4d | at depth %-2d | %-s | %-3s | %-3s | %-3s | %-3s | %-3s | %s", p1->nodeData->lineNo, p1->depth, "Assignment", op, p1->nodeData->nodeName, p1->nodeData->subExpression->data.table.field4.typePrimitive, p2->nodeData->nodeName, p2->nodeData->subExpression->data.table.field4.typePrimitive, message);
-    printf("\n*************************************************************************************\n");
+    if(p1 && p2) {
+        char *type1, *type2;
+        type1 = p1->nodeData->subExpression->data.table.field4.typePrimitive;
+        type2 = p2->nodeData->subExpression->data.table.field4.typePrimitive;
+        parseTreeNode *p3, *p4;
+        if(strcmp(p1->nodeData->nodeName, "ARITHEXPR") == 0) {
+            printf("inside ARITHEXPR 1276 for\n");
+            p1 = p1->child->child->child->child;
+        } else if(strcmp(p1->nodeData->nodeName, "ARITHEXPR2") == 0) {
+            while(strcmp(p1->nodeData->nodeName, "ARITHEXPR2") == 0) {
+                p1 = p1->child->child->child;
+            }
+            printf("at 1282 %s\n",p1->nodeData->nodeName);
+        }
+        if(strcmp(p2->nodeData->nodeName, "ARITHEXPR") == 0) {
+            p2 = p2->child->child->child->child;
+            printf("inside ARITHEXPR 1286 for\n");
+        } else if(strcmp(p2->nodeData->nodeName, "ARITHEXPR2") == 0) {
+            // if(p2->next) {
+            //     printf("op found in next\n");
+            //     op = p2->next->nodeData->nodeName;
+            // } else if(p2->child->next) {
+            //     printf("op found in child next\n");
+            //     op = p2->child->next->nodeData->nodeName;
+            // }
+            while(strcmp(p2->nodeData->nodeName, "ARITHEXPR2") == 0) {
+                p2 = p2->child->child->child;
+                printf("%s/n",p2->nodeData->nodeName);
+            }
+            printf("at 196 %s\n",p2->nodeData->nodeName);
+        }
+        printf("\n*************************************************************************************\n");
+        printf("%-4d | at depth %-2d | %-s | %-3s | %-3s | %-3s | %-3s | %-3s | %s", p1->nodeData->lineNo, p1->depth, "Assignment", "arith_op", p1->nodeData->nodeName, type1, p2->nodeData->nodeName, type2, message);
+        printf("\n*************************************************************************************\n");
+    } else {
+        char *type1;
+        type1 = p1->nodeData->subExpression->data.table.field4.typePrimitive;
+        if(strcmp(p1->nodeData->nodeName, "ARITHEXPR") == 0) {
+            p1 = p1->child->child->child->child;
+        } else if(strcmp(p1->nodeData->nodeName, "ARITHEXPR2") == 0) {
+            while(strcmp(p1->nodeData->nodeName, "ARITHEXPR2") == 0) {
+                p1 = p1->child->child->child;
+            }
+        }
+        printf("\n*************************************************************************************\n");
+        printf("%-4d | at depth %-2d | %-s | %-3s | %-3s | %-3s | %-3s | %-3s | %s (Error in LHS)", p1->nodeData->lineNo, p1->depth, "Assignment", "N/A", p1->nodeData->nodeName, p1->nodeData->subExpression->data.table.field4.typePrimitive, "N/A", "N/A", message);
+        printf("\n*************************************************************************************\n");
+    }
 }

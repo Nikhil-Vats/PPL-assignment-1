@@ -83,7 +83,7 @@ void printTypeExpressionTable(typeExpressionTable *T)
                 int rows = (int) atoi(T->dataTypeExpr[i].field4.jag.R1[1]) - (int) atoi(T->dataTypeExpr[i].field4.jag.R1[0]) + 1;
                 // printf("%d\n", T->dataTypeExpr[i].field4.jag._2dor3d.r2[1]);
                 for(int m = 0; m < rows; m++) {
-                    printf("%d [ ",T->dataTypeExpr[i].field4.jag._2dor3d.r2[m]);
+                    printf("%d [ ",T->dataTypeExpr[i].field4.jag._2dor3d.r2_[m].r);
                     for(int n = 0; n < T->dataTypeExpr[i].field4.jag._2dor3d.r2_[m].r; n++) {
                         if(n == (T->dataTypeExpr[i].field4.jag._2dor3d.r2_[m].r - 1)) {
                             printf("%d ",T->dataTypeExpr[i].field4.jag._2dor3d.r2_[m].arr[n]);

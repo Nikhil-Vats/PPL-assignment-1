@@ -81,7 +81,7 @@ void printDecErrors(int lineNo,int depth, char *message, int *optionalVar);
 
 // *****************************  ASSIGNMENT STATEMENTS RECURSION *****************************
 tableData *recurseArithExp(parseTreeNode *p, typeExpressionTable *T);
-bool compareSubExpr(parseTreeNode* p1, parseTreeNode* p2, typeExpressionTable *T);
+bool compareSubExpr(parseTreeNode* p1, parseTreeNode* p2, typeExpressionTable *T, bool compareLHS);
 tableData *findvar(parseTreeNode *p, typeExpressionTable *T);
 char *findVarname(parseTreeNode *p);
 bool traverseIndexesRectangular(parseTreeNode *p, tableData d, int dim);
