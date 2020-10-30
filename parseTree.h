@@ -58,6 +58,7 @@ void removeOldNodesFromParseTree(parseTreeNode *ptNode);
 void printParseTree(parseTree *t);
 void printfunc(parseTreeNode * root);
 void printAll(parseTreeNode * root);
+char* fieldfunc(parseTreeNode* root);
 void printChild(parseTreeNode *root, char *parent);
 void printSibs(parseTreeNode *root, char *origin);
 

@@ -65,3 +65,7 @@ void printAssnErrors(parseTreeNode *p1, parseTreeNode *p2, char *op, char *messa
     printf("\n%s", message);
     printf("\n*************************************************************************************\n");
 }
+
+git add .
+git commit -m "latest code 2"
+git push

@@ -256,8 +256,13 @@ void inOrder(parseTreeNode *n, typeExpressionTable *T)
                 char *var = arith->nodeData->nodeName;
                 printf("\nwithin arith ass stmt with first id = %s\n", var);
                 tableData *lhs = findvar(arith, T);
+                printf("FindVar donee");
+                printf("FindVar donee");
+                printf("FindVar donee");
+                printf("FindVar donee");
                 if(!lhs) {
                     // ERROR ALREADY PRINTED
+                
                 }
                 arith = temp->child->next->next; //In ARITHEXPR2
 
@@ -567,7 +572,7 @@ tableData *findvar(parseTreeNode *p, typeExpressionTable *T)
     }
     if (!p->next)
     {
-        // printf("\nthis was just an ID so no next\n");
+        printf("\nthis was just an ID so no next\n");
         return d;
     }
     else

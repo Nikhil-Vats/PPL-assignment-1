@@ -258,6 +258,7 @@ void printParseTree(parseTree *t)
 {
     parseTreeNode *root = t->root;
     // printf("")
+    printf(" Symbol- | Terminal/Non Terminal | Type Expression | Lexeme | Line Number | Depth of Node ");
     printfunc(root);
 }
 
@@ -267,11 +268,40 @@ void printfunc(parseTreeNode *root)
     {
         return;
     }
-    printf("\n%s\n", root->nodeData->nodeName);
+     printf("\n%s\n", root->nodeData->nodeName);
+
     printAll(root);
     printfunc(root->child);
     printfunc(root->next);
 }
+char* fieldfunc(parseTreeNode* root){
+    char* field;
+    if (root->nodeData->subExpression->data.table.field2 == primitive)
+    {
+        if (strcmp(root->nodeData->subExpression->data.table.field4.typePrimitive, "integer") == 0)
+        {
+            field ="Primitive-Integer";
+        }
+        else if (strcmp(root->nodeData->subExpression->data.table.field4.typePrimitive, "real") == 0)
+        {
+            field = "Primitive-Real";
+        }
+        else if (strcmp(root->nodeData->subExpression->data.table.field4.typePrimitive, "boolean") == 0)
+        {
+            field = "Primitive-Boolean";
+        }
+    }
+    else if (root->nodeData->subExpression->data.table.field2 == rectangular)
+    {
+        field = "RectangularArray";
+    }
+    else if (root->nodeData->subExpression->data.table.field2 == jagged)
+    {
+        field = "JaggedArray";
+    }
+    return field;
+}
+
 // /*  Symbol name
 //  Whether terminal or non terminal
 //  Type expression stored in the corresponding node (if non-leaf)
@@ -286,7 +316,7 @@ void printAll(parseTreeNode *root)
     if (isTerminal(root->nodeData->nodeName))
     {
         ter = "Terminal";
-        printf("Symbol - %-5s | %-5s | Type- *** | lexeme-%-5s | Line-%-5d | rule- *** | depth-%-5d ", getTokenName(root->nodeData->nodeName), ter, root->nodeData->nodeName, root->nodeData->lineNo, root->depth);
+        printf(" %-5s | %-5s | *** | %-5s |   %-5d | %-5d \n", getTokenName(root->nodeData->nodeName), ter, root->nodeData->nodeName, root->nodeData->lineNo, root->depth);
     }
     else
     {
@@ -294,88 +324,67 @@ void printAll(parseTreeNode *root)
 
         if (strcmp(root->nodeData->nodeName, "DIMENSIONS") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<DIMENSIONS, Number of Dimensions=%-5d> | lexeme- *** | Line- *** | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimensions.count, root->depth);
+            printf(" %-5s | %-5s |   <DIMENSIONS, Number of Dimensions=%d> |   *** |    *** |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimensions.count, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "DIMENSION") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<DIMENSION, Range=(%-5s,%-5s)> | lexeme- *** | Line- *** | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimension.range[0], root->nodeData->subExpression->dimension.range[1], root->depth);
+            printf(" %-5s | %-5s |   <DIMENSION, Range=(%s,%s)> |   *** |    *** |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimension.range[0], root->nodeData->subExpression->dimension.range[1], root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "DIMENSIONS_REMAINING") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<DIMENSIONS_REMAINING Number of Dimensions=%-5d> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimRemaining.count, root->depth);
+            printf(" %-5s | %-5s |   <DIMENSIONS_REMAINING Number of Dimensions=%d> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimRemaining.count, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "DIMJAGGED") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<DIMJAGGED Number of Dimensions=%-5d Ranges=(%-5s,%-5s)> | lexeme- *** | Line- *** | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimJagged.dim, root->nodeData->subExpression->dimJagged.num1, root->nodeData->subExpression->dimJagged.num2, root->depth);
+            printf(" %-5s | %-5s |   <DIMJAGGED Number of Dimensions=%-5d Ranges=(%s,%s)> |   *** |    *** |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->dimJagged.dim, root->nodeData->subExpression->dimJagged.num1, root->nodeData->subExpression->dimJagged.num2, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "RANGE") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<Range Range=(%-5s,%-5s)> | lexeme- *** | Line- *** | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->range.num1, root->nodeData->subExpression->range.num2, root->depth);
+            printf(" %-5s | %-5s |   <Range Range=(%s,%s)> |   *** |    *** |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->range.num1, root->nodeData->subExpression->range.num2, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "NUMLIST") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<NUMLIST Number of Integers=%-5d> | lexeme- *** | Line- *** | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->numlist.count, root->depth);
+            printf(" %-5s | %-5s |   <NUMLIST Number of Integers=%d> |   *** |    *** |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->numlist.count, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "NUMS") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<NUMS Number of Integers=%-5d> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->nums.count, root->depth);
+            printf(" %-5s | %-5s |   <NUMS Number of Integers=%d> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->nums.count, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "LISTOFNUMLIST") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<LISTOFNUMLIST Number of Integers=%-5d> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->listofnumlist.count, root->depth);
+            printf(" %-5s | %-5s |   <LISTOFNUMLIST Number of NumList=%d> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->listofnumlist.count, root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "MAKEROWS") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<MAKEROWS Number of Rows=%-5d 2D or 3D=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, root->nodeData->subExpression->makerows.rows, root->nodeData->subExpression->makerows.is3D == 0 ? "2D" : "3D", root->depth);
+            printf(" %-5s | %-5s |   <MAKEROWS Number of Rows=%d 2D or 3D=%s> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, root->nodeData->subExpression->makerows.rows, root->nodeData->subExpression->makerows.is3D == 0 ? "2D" : "3D", root->depth);
         }
-        else if(strcmp(root->nodeData->nodeName, "START") != 0) {
-            if (root->nodeData->subExpression->data.table.field2 == primitive)
-            {
-                if (strcmp(root->nodeData->subExpression->data.table.field4.typePrimitive, "integer") == 0)
-                {
-                    field = "Primitive-Integer";
-                }
-                else if (strcmp(root->nodeData->subExpression->data.table.field4.typePrimitive, "real") == 0)
-                {
-                    field = "Primitive-Real";
-                }
-                else if (strcmp(root->nodeData->subExpression->data.table.field4.typePrimitive, "boolean") == 0)
-                {
-                    field = "Primitive-Boolean";
-                }
-            }
-            else if (root->nodeData->subExpression->data.table.field2 == rectangular)
-            {
-                field = "RectangularArray";
-            }
-            else if (root->nodeData->subExpression->data.table.field2 == jagged)
-            {
-                field = "JaggedArray";
-            }
-        }
-        if (strcmp(root->nodeData->nodeName, "ARITHEXPR") == 0)
-        {
-            printf("Symbol - %-5s | %-5s | Type-<ARITHEXPR Datatype=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, field, root->depth);
-        }
+        // if (strcmp(root->nodeData->nodeName, "ARITHEXPR") == 0)
+        // {
+        //     printf(" %-5s | %-5s |   <ARITHEXPR Datatype=%s> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, fieldfunc(root), root->depth);
+        // }
         else if (strcmp(root->nodeData->nodeName, "ARITHEXPR2") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<ARITHEXPR2 Datatype=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, field, root->depth);
+            // printf("\n");
+            printf(" %-5s | %-5s |   <ARITHEXPR2 Datatype=%s> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, fieldfunc(root), root->depth);
         }
-        else if (strcmp(root->nodeData->nodeName, "VARNUM") == 0)
-        {
-            printf("Symbol - %-5s | %-5s | Type-<VARNUM Datatype=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, field, root->depth);
-        }
-        else if (strcmp(root->nodeData->nodeName, "VAR") == 0)
-        {
-            printf("Symbol - %-5s | %-5s | Type-<VAR Datatype=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, field, root->depth);
-        }
+        // else if (strcmp(root->nodeData->nodeName, "VARNUM") == 0)
+        // {
+        //     printf(" %-5s | %-5s |   <VARNUM Datatype=%s> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, fieldfunc(root), root->depth);
+        // }
+        // else if (strcmp(root->nodeData->nodeName, "VAR") == 0)
+        // {
+        //     printf(" %-5s | %-5s |   <VAR Datatype=> |   *** |    ***  |   %-5d \n", root->nodeData->nodeName, ter, root->depth);
+        // }
         else if (strcmp(root->nodeData->nodeName, "LOGICALEXPR") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<LOGICALEXPR Datatype=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, field, root->depth);
+            printf(" %-5s | %-5s |   <LOGICALEXPR Datatype=%s> | *** |  ***  | %-5d \n", root->nodeData->nodeName, ter, fieldfunc(root), root->depth);
         }
         else if (strcmp(root->nodeData->nodeName, "LOGICALEXPR2") == 0)
         {
-            printf("Symbol - %-5s | %-5s | Type-<LOGICALEXPR2 Datatype=%-5s> | lexeme- *** | Line- ***  | depth-%-5d ", root->nodeData->nodeName, ter, field, root->depth);
+            printf(" %-5s | %-5s |  <LOGICALEXPR2 Datatype=%s> | *** | *** | %-5d \n", root->nodeData->nodeName, ter, fieldfunc(root), root->depth);
+        }
+        else{
+            return;
         }
     }
 }
