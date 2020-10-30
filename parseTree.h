@@ -56,6 +56,8 @@ void removeOldNodesFromParseTree(parseTreeNode *ptNode);
 // void printTypeExpressionTable(int T);
 
 void printParseTree(parseTree *t);
+void printfunc(parseTreeNode * root);
+void printAll(parseTreeNode * root);
 void printChild(parseTreeNode *root, char *parent);
 void printSibs(parseTreeNode *root, char *origin);
 
