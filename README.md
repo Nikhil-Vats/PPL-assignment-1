@@ -5,3 +5,5 @@
 The problem statement can be broadly categorized into:
 1. Grammar design
 2. Data Structures design - Parse Tree and Type Expression Table Computation
+
+The detailed problem statement is available at [`assignment`](/assignment.pdf/)
